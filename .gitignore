@@ -1,0 +1,13 @@
+/.gradle/
+/.idea/
+/.nb-gradle/
+/build/
+/dist/
+/logs/
+/nbproject/private/
+/out/
+*.log
+*.exe
+*.zip
+*.txt
+Thumbs.db
