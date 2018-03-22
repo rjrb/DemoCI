@@ -2,6 +2,7 @@ group 'com.ramirezblauvelt.democi'
 version '1.0'
 
 apply plugin: 'java'
+apply plugin: "org.sonarqube"
 
 sourceCompatibility = 1.8
 
@@ -16,4 +17,23 @@ dependencies {
     compile group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '2.26'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// Sonar
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1"
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "http://52.44.17.86:9000"
+        property "sonar.login", "3876b0dd8df63eb605004703dfdccfc35c0baea8"
+    }
 }
