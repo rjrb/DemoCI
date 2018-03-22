@@ -25,7 +25,7 @@ public class Fechas {
 		System.out.println(
 				sumarDiasHabilesConFestivos(
 						LocalDate.of(2018, Month.MARCH, 21),
-						1,
+						10,
 						"col"
 				)
 		);

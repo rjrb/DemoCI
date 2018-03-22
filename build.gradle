@@ -2,9 +2,18 @@ group 'com.ramirezblauvelt.democi'
 version '1.0'
 
 apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'java-library-distribution'
 apply plugin: "org.sonarqube"
 
+// Java
+description = 'Aplicación para sumar días hábiles a fechas de referencia'
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+// Application
+mainClassName = 'com.ramirezblauvelt.democi.Fechas'
 
 repositories {
     mavenCentral()
@@ -17,6 +26,24 @@ dependencies {
     compile group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '2.26'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// Java Library Distribution
+tasks.distTar.enabled = false
+tasks.distZip.enabled = false
+distZip.shouldRunAfter(build)
+
+// JAR
+jar {
+    baseName = 'DemoCI'
+
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+
+    manifest {
+        attributes \
+			'Main-Class': 'com.ramirezblauvelt.democi.Fechas',
+                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+    }
 }
 
 // Sonar

@@ -17,6 +17,10 @@ public class ConsultarFestivos {
 	/** URL relativa de la API */
 	private static final String API_PATH = "json/v2.0";
 
+	private ConsultarFestivos() {
+
+	}
+
 	/**
 	 * Procedimiento para obtener, desde un servicio web, los festivos de un país para un año en particular
 	 * @param pais código del país para el cual se buscan los festivos, de los soportados por el servicio
@@ -24,7 +28,7 @@ public class ConsultarFestivos {
 	 * @return el conjunto de festivos públicos para el país y el año especificados
 	 * @throws RuntimeException si no se puedo consultar el servicio o falla la conversión de datos
 	 */
-	public static Set<Festivo> getFestivosAno(String pais, int ano) throws RuntimeException {
+	public static Set<Festivo> getFestivosAno(String pais, int ano) {
 
 		// Consume el servicio web
 		try (
@@ -40,7 +44,7 @@ public class ConsultarFestivos {
 		) {
 			// Lee la respuesta
 			if(response.getStatus() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + " ---> " + response.getStatusInfo());
+				throw new IllegalStateException("Failed : HTTP error code : " + response.getStatus() + " ---> " + response.getStatusInfo());
 			}
 
 			// Convierte la respuesta
