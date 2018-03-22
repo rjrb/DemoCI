@@ -7,24 +7,24 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.Set;
 
 public class ConsultarFestivos {
 
 	/** URL de la API */
-	public static final String URL_API = "http://kayaposoft.com/enrico";
+	private static final String URL_API = "http://kayaposoft.com/enrico";
 
 	/** URL relativa de la API */
-	public static final String API_PATH = "json/v2.0";
+	private static final String API_PATH = "json/v2.0";
 
 	/**
 	 * Procedimiento para obtener, desde un servicio web, los festivos de un país para un año en particular
-	 * @param pais
-	 * @param ano
-	 * @return
-	 * @throws RuntimeException
+	 * @param pais código del país para el cual se buscan los festivos, de los soportados por el servicio
+	 * @param ano año para el cual se consultan los festivos
+	 * @return el conjunto de festivos públicos para el país y el año especificados
+	 * @throws RuntimeException si no se puedo consultar el servicio o falla la conversión de datos
 	 */
-	public static List<Festivo> getFestivosAno(String pais, int ano) throws RuntimeException {
+	public static Set<Festivo> getFestivosAno(String pais, int ano) throws RuntimeException {
 
 		// Consume el servicio web
 		try (
@@ -45,11 +45,10 @@ public class ConsultarFestivos {
 
 			// Convierte la respuesta
 			final Gson gson = new Gson();
-			final Type tipoListaFestivos = new TypeToken<List<Festivo>>(){}.getType();
-			final List<Festivo> festivos = gson.fromJson(response.readEntity(String.class), tipoListaFestivos);
+			final Type tipoListaFestivos = new TypeToken<Set<Festivo>>(){}.getType();
 
 			// Entrega el dato
-			return festivos;
+			return gson.fromJson(response.readEntity(String.class), tipoListaFestivos);
 		}
 	}
 

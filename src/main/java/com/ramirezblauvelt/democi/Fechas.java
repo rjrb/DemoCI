@@ -2,12 +2,11 @@ package com.ramirezblauvelt.democi;
 
 import com.ramirezblauvelt.democi.beans.Festivo;
 import com.ramirezblauvelt.democi.utils.ConsultarFestivos;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -15,12 +14,21 @@ import java.util.stream.Collectors;
  */
 public class Fechas {
 
+	/** Colección para almacenar los festivos por pais */
+	private static final ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>> festivosGlobales = new ConcurrentHashMap<>();
+
 	/**
 	 * Método de entrada
-	 * @param args
+	 * @param args argumentos de la línea de comandos
 	 */
 	public static void main(String[] args) {
-		System.out.println(sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.MARCH, 21), 1, "col"));
+		System.out.println(
+				sumarDiasHabilesConFestivos(
+						LocalDate.of(2018, Month.MARCH, 21),
+						1,
+						"col"
+				)
+		);
 	}
 
 	/**
@@ -34,7 +42,7 @@ public class Fechas {
 	 */
 	public static LocalDate sumarDiasHabilesConFestivos(LocalDate fechaInicial, int diasHabilesSumar, String pais) {
 		// Operador
-		final int operador = diasHabilesSumar >= 0 ? 1 : -1;
+		final int paso = Integer.signum(diasHabilesSumar);
 
 		// Días absolutos a sumar
 		int dias = Math.abs(diasHabilesSumar);
@@ -42,27 +50,32 @@ public class Fechas {
 		// Encuentra los días
 		LocalDate referencia = LocalDate.from(fechaInicial);
 		int year = -1;
-		final Set<LocalDate> festivos = new TreeSet<>();
 		while(dias > 0) {
 			// Suma un día
-			referencia = referencia.plusDays(operador);
+			referencia = referencia.plusDays(paso);
 
 			// Obtiene los festivos del año
 			if(year != referencia.getYear()) {
 				year = referencia.getYear();
-				festivos.addAll(
-					ConsultarFestivos.getFestivosAno(pais, year)
+				if(!festivosGlobales.containsKey(pais) || !festivosGlobales.get(pais).containsKey(year)) {
+					// Consulta los festivos para el país y el año
+					final Set<LocalDate> festivos = ConsultarFestivos.getFestivosAno(pais, year)
 						.parallelStream()
-						.map(Festivo::getDate)
-						.collect(Collectors.toSet())
-				);
+							.map(Festivo::getDate)
+							.collect(Collectors.toSet())
+					;
+
+					// Carga los festivos
+					festivosGlobales.putIfAbsent(pais, new ConcurrentHashMap<>());
+					festivosGlobales.get(pais).putIfAbsent(year, festivos);
+				}
 			}
 
 			// Valida si el día es hábil
 			if(
 				referencia.getDayOfWeek() != DayOfWeek.SATURDAY
 				&& referencia.getDayOfWeek() != DayOfWeek.SUNDAY
-				&& !festivos.contains(referencia)
+				&& !festivosGlobales.get(pais).get(year).contains(referencia)
 			) {
 				dias--;
 			}
@@ -70,6 +83,16 @@ public class Fechas {
 
 		// Entrega la fecha
 		return referencia;
+	}
+
+	/**
+	 * Procedimiento que suma a la fecha inicial, la cantidad de días hábiles en Colombia
+	 * @param fechaInicial fecha inicial a la cual se le suman los días
+	 * @param diasHabilesSumar días hábiles a sumar a la fecha inicial
+	 * @return la fecha resultante de sumar a la fecha inicial, la cantidad de días hábiles indicados, en Colombia
+	 */
+	public static LocalDate sumarDiasHabilesConFestivosColombia(LocalDate fechaInicial, int diasHabilesSumar) {
+		return sumarDiasHabilesConFestivos(fechaInicial, diasHabilesSumar, "col");
 	}
 
 }
