@@ -1,98 +1,139 @@
 package com.ramirezblauvelt.democi;
 
-import com.ramirezblauvelt.democi.beans.Festivo;
-import com.ramirezblauvelt.democi.utils.ConsultarFestivos;
-import java.time.DayOfWeek;
+import com.ramirezblauvelt.democi.utils.SumarFestivos;
+import com.ramirezblauvelt.democi.utils.Utilidades;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.AbstractMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Clase con funciones para fechas
  */
 public class Fechas {
 
-	/** Colección para almacenar los festivos por pais */
-	private static final ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>> festivosGlobales = new ConcurrentHashMap<>();
+	/* Log de eventos */
+	static {
+		System.setProperty("log4j2.configurationFile", "com/ramirezblauvelt/democi/log4j2.xml");
+	}
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	/** Argumentos esperados */
+	private static final Map<String, String> EXPECTED_ARGS =
+		Stream.of(
+			new AbstractMap.SimpleEntry<>("sf",  "fechaInicial(aaaa-mm-dd) día pais"),
+			new AbstractMap.SimpleEntry<>("sfc", "fechaInicial(aaaa-mm-dd) día")
+		)
+		.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue))
+	;
 
 	/**
 	 * Método de entrada
 	 * @param args argumentos de la línea de comandos
 	 */
 	public static void main(String[] args) {
-		System.out.println(
-				sumarDiasHabilesConFestivos(
-						LocalDate.of(2018, Month.MARCH, 21),
-						10,
-						"col"
-				)
-		);
-	}
-
-	/**
-	 * Procedimiento que suma a una fecha inicial, el número de días hábiles indicados, teniendo
-	 * en cuenta sábados y domingos como días no laborales, y los festivos del país en cuestión.
-	 * Los datos de festivos son obtenidos a partir de un servicio web externo
-	 * @param fechaInicial fecha inicial a la cual se le suman los días
-	 * @param diasHabilesSumar días hábiles a sumar a la fecha inicial
-	 * @param pais código del país para el cual se buscarán los festivos en el servicio web
-	 * @return la fecha resultante de sumar a la fecha inicial, la cantidad de días hábiles indicados
-	 */
-	public static LocalDate sumarDiasHabilesConFestivos(LocalDate fechaInicial, int diasHabilesSumar, String pais) {
-		// Operador
-		final int paso = Integer.signum(diasHabilesSumar);
-
-		// Días absolutos a sumar
-		int dias = Math.abs(diasHabilesSumar);
-
-		// Encuentra los días
-		LocalDate referencia = LocalDate.from(fechaInicial);
-		int year = -1;
-		while(dias > 0) {
-			// Suma un día
-			referencia = referencia.plusDays(paso);
-
-			// Obtiene los festivos del año
-			if(year != referencia.getYear()) {
-				year = referencia.getYear();
-				if(!festivosGlobales.containsKey(pais) || !festivosGlobales.get(pais).containsKey(year)) {
-					// Consulta los festivos para el país y el año
-					final Set<LocalDate> festivos = ConsultarFestivos.getFestivosAno(pais, year)
-						.parallelStream()
-							.map(Festivo::getDate)
-							.collect(Collectors.toSet())
-					;
-
-					// Carga los festivos
-					festivosGlobales.putIfAbsent(pais, new ConcurrentHashMap<>());
-					festivosGlobales.get(pais).putIfAbsent(year, festivos);
-				}
-			}
-
-			// Valida si el día es hábil
-			if(
-				referencia.getDayOfWeek() != DayOfWeek.SATURDAY
-				&& referencia.getDayOfWeek() != DayOfWeek.SUNDAY
-				&& !festivosGlobales.get(pais).get(year).contains(referencia)
-			) {
-				dias--;
-			}
+		// Integridad
+		if(args.length == 0) {
+			LOGGER.error("No especificó una acción. Se espera uno de los siguientes parámetros:");
+			EXPECTED_ARGS.forEach(Fechas::accept);
+			System.exit(1);
 		}
 
-		// Entrega la fecha
-		return referencia;
+		// Lee el argumento
+		final String operacion = args[0];
+		if(!EXPECTED_ARGS.containsKey(operacion)) {
+			LOGGER.error("No especificó una acción válida. Se espera una de las siguientes acciones:");
+			EXPECTED_ARGS.keySet().forEach(LOGGER::error);
+			System.exit(1);
+		}
+
+		// Lee la cantidad de argumentos entregados
+		final int argumentos = args.length - 1;
+
+		// Lee la cantidad de argumentos esperados
+		final int argumentosEsperados = EXPECTED_ARGS.get(operacion).split("\\s").length;
+		if(argumentos != argumentosEsperados) {
+			LOGGER.error("Se esperan {} argumentos para la operación {} y se recibieron {}", argumentosEsperados, operacion, argumentos);
+			LOGGER.error("Modo de operación: {} {}", operacion, EXPECTED_ARGS.get(operacion));
+			System.exit(1);
+		}
+
+		// Lee la fecha
+		final LocalDate fechaInicial = Utilidades.getFecha(args[1]);
+		if(fechaInicial == null) {
+			LOGGER.error("La fecha ingresada '{}' no tiene un formato ISO válido", args[1]);
+			System.exit(1);
+		}
+
+		// Lee la cantidad de días a sumar
+		final Integer diasHabiles = Utilidades.getDiasHabiles(args[2]);
+		if(diasHabiles == null) {
+			LOGGER.error("Los días ingresados '{}' no son un número entero válido", args[2]);
+			System.exit(1);
+		}
+
+		// Si se espera el país
+		String pais = null;
+		if(argumentosEsperados == 3) {
+			pais = args[4];
+		}
+
+		// Ejecuta la acción
+		String resultado = null;
+		switch (operacion) {
+			case "sf":
+				resultado = sumarFestivos(pais, fechaInicial, diasHabiles);
+				break;
+			case "sfc":
+				resultado = sumarFestivosColombia(fechaInicial, diasHabiles);
+				break;
+		}
+
+		// Muestra el resultado obtenido
+		LOGGER.info(resultado);
+
+		// Proceso exitoso
+		System.exit(0);
 	}
 
 	/**
-	 * Procedimiento que suma a la fecha inicial, la cantidad de días hábiles en Colombia
-	 * @param fechaInicial fecha inicial a la cual se le suman los días
-	 * @param diasHabilesSumar días hábiles a sumar a la fecha inicial
-	 * @return la fecha resultante de sumar a la fecha inicial, la cantidad de días hábiles indicados, en Colombia
+	 * Procedimiento que suma los días hábiles a la fecha inicial, en el país indicado
+	 * @param pais país del cual se tomarán los festivos
+	 * @param fechaInicial fecha inicial a partir de la cual se hace la suma
+	 * @param dias días hábiles a sumar
+	 * @return la fecha resultante de sumar la cantidad de días hábiles a la fecha inicial, en el país indicado
 	 */
-	public static LocalDate sumarDiasHabilesConFestivosColombia(LocalDate fechaInicial, int diasHabilesSumar) {
-		return sumarDiasHabilesConFestivos(fechaInicial, diasHabilesSumar, "col");
+	private static String sumarFestivos(String pais, LocalDate fechaInicial, int dias) {
+		// Obtiene la fecha
+		final LocalDate nuevaFecha = SumarFestivos.sumarDiasHabilesConFestivos(
+			fechaInicial,
+			dias,
+			pais
+		);
+
+		// Mensaje
+		return "El resultado de sumar '" + dias + "' hábiles en '" + pais + "' a la fecha '" + fechaInicial + "' es: '" + nuevaFecha + "'";
 	}
 
+	/**
+	 * Procedimiento que suma los días hábiles a la fecha inicial, en Colombia
+	 * @param fechaInicial fecha inicial a partir de la cual se hace la suma
+	 * @param dias días hábiles a sumar
+	 * @return la fecha resultante de sumar la cantidad de días hábiles a la fecha inicial, en Colombia
+	 */
+	private static String sumarFestivosColombia(LocalDate fechaInicial, int dias) {
+		return sumarFestivos("col", fechaInicial, dias);
+	}
+
+	/**
+	 * BiFunction
+	 * @param parametro nombre del parámetro aceptado
+	 * @param argumentos lista de argumentos esperados para ése parámetro
+	 */
+	private static void accept(String parametro, String argumentos) {
+		LOGGER.error(parametro + " " + argumentos);
+	}
 }
