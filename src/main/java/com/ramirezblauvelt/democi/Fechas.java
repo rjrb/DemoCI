@@ -78,7 +78,7 @@ public class Fechas {
 		// Si se espera el país
 		String pais = null;
 		if(argumentosEsperados == 3) {
-			pais = args[4];
+			pais = args[3];
 		}
 
 		// Ejecuta la acción
