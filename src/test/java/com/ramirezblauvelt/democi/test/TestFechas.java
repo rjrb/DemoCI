@@ -13,27 +13,27 @@ public class TestFechas {
 		try {
 
 			Assert.assertEquals(
-					"No sumó los días hábiles esperados",
-					LocalDate.of(2018, Month.FEBRUARY, 22).toString(),
-					SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.FEBRUARY, 1), 15, "col").toString()
+				"No sumó los días hábiles esperados",
+				LocalDate.of(2018, Month.FEBRUARY, 22).toString(),
+				SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.FEBRUARY, 1), 15, "col").toString()
 			);
 
 			Assert.assertEquals(
-					"No sumó los días hábiles esperados",
-					LocalDate.of(2018, Month.FEBRUARY, 23).toString(),
-					SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.FEBRUARY, 3), 15, "col").toString()
+				"No sumó los días hábiles esperados",
+				LocalDate.of(2018, Month.FEBRUARY, 23).toString(),
+				SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.FEBRUARY, 3), 15, "col").toString()
 			);
 
 			Assert.assertEquals(
-					"No sumó los días hábiles esperados",
-					LocalDate.of(2018, Month.JANUARY, 23).toString(),
-					SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.JANUARY, 1), 15, "col").toString()
+				"No sumó los días hábiles esperados",
+				LocalDate.of(2018, Month.JANUARY, 23).toString(),
+				SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.JANUARY, 1), 15, "col").toString()
 			);
 
 			Assert.assertEquals(
-					"No sumó los días hábiles esperados",
-					LocalDate.of(2018, Month.MARCH, 26).toString(),
-					SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.MARCH, 4), 15, "col").toString()
+				"No sumó los días hábiles esperados",
+				LocalDate.of(2018, Month.MARCH, 26).toString(),
+				SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.MARCH, 4), 15, "col").toString()
 			);
 
 		} catch (Exception e) {
@@ -45,9 +45,9 @@ public class TestFechas {
 	public void testSumarDiasHabilesConFestivosCambioEnMes() {
 		try {
 			Assert.assertEquals(
-					"No sumó los días hábiles esperados",
-					LocalDate.of(2018, Month.APRIL, 11).toString(),
-					SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.MARCH, 16), 15, "col").toString()
+				"No sumó los días hábiles esperados",
+				LocalDate.of(2018, Month.APRIL, 11).toString(),
+				SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.MARCH, 16), 15, "col").toString()
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,9 +58,9 @@ public class TestFechas {
 	public void testSumarDiasHabilesConFestivosCambioEnAno() {
 		try {
 			Assert.assertEquals(
-					"No sumó los días hábiles esperados",
-					LocalDate.of(2019, Month.JANUARY, 9).toString(),
-					SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.DECEMBER, 22), 10, "col").toString()
+				"No sumó los días hábiles esperados",
+				LocalDate.of(2019, Month.JANUARY, 9).toString(),
+				SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.DECEMBER, 22), 10, "col").toString()
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,9 +71,9 @@ public class TestFechas {
 	public void testSumarDiasHabilesConFestivosNegativoCambioMes() {
 		try {
 			Assert.assertEquals(
-					"No sumó los días hábiles esperados",
-					LocalDate.of(2018, Month.MARCH, 21).toString(),
-					SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.APRIL, 6), -10, "col").toString()
+				"No sumó los días hábiles esperados",
+				LocalDate.of(2018, Month.MARCH, 21).toString(),
+				SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.APRIL, 6), -10, "col").toString()
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,34 +83,43 @@ public class TestFechas {
 	@Test
 	public void testSumarDiasHabilesConFestivosNegativoCambioAnoColombia() {
 		Assert.assertEquals(
-				"No sumó los días hábiles esperados",
-				LocalDate.of(2018, Month.DECEMBER, 20).toString(),
-				SumarFestivos.sumarDiasHabilesConFestivosColombia(LocalDate.of(2019, Month.JANUARY, 10), -12).toString()
+			"No sumó los días hábiles esperados",
+			LocalDate.of(2018, Month.DECEMBER, 20).toString(),
+			SumarFestivos.sumarDiasHabilesConFestivosColombia(LocalDate.of(2019, Month.JANUARY, 10), -12).toString()
 		);
 	}
 
 	@Test
 	public void testSumarDiasHabilesConFestivosColombiaCero() {
 		Assert.assertEquals(
-				"No sumó los días hábiles esperados",
-				LocalDate.of(2018, Month.DECEMBER, 20).toString(),
-				SumarFestivos.sumarDiasHabilesConFestivosColombia(LocalDate.of(2018, Month.DECEMBER, 20), 0).toString()
+			"No sumó los días hábiles esperados",
+			LocalDate.of(2018, Month.DECEMBER, 20).toString(),
+			SumarFestivos.sumarDiasHabilesConFestivosColombia(LocalDate.of(2018, Month.DECEMBER, 20), 0).toString()
 		);
 	}
 
 	@Test
 	public void testIsFinDeSemana() {
 		Assert.assertTrue("No detectó el fin de semana", SumarFestivos.isFinDeSemana(LocalDate.of(2018, 3, 24)));
+		Assert.assertTrue("No detectó el fin de semana", SumarFestivos.isFinDeSemana(LocalDate.of(2018, 3, 25)));
+		Assert.assertFalse("Falso positivo de fin de semana", SumarFestivos.isFinDeSemana(LocalDate.of(2018, 3, 19)));
+		Assert.assertFalse("Falso positivo de fin de semana", SumarFestivos.isFinDeSemana(LocalDate.of(2018, 3, 20)));
+		Assert.assertFalse("Falso positivo de fin de semana", SumarFestivos.isFinDeSemana(LocalDate.of(2018, 3, 21)));
+		Assert.assertFalse("Falso positivo de fin de semana", SumarFestivos.isFinDeSemana(LocalDate.of(2018, 3, 22)));
 		Assert.assertFalse("Falso positivo de fin de semana", SumarFestivos.isFinDeSemana(LocalDate.of(2018, 3, 23)));
 	}
 
 	@Test
 	public void testIsFestivo() {
 		Assert.assertTrue(
-				"No detectó el festivo",
-				SumarFestivos.isFestivo(LocalDate.of(2018, Month.MARCH, 30), "col")
+			"No detectó el festivo",
+			SumarFestivos.isFestivo(LocalDate.of(2018, Month.MARCH, 30), "col")
 		);
 
-		Assert.assertFalse("Falso positivo", SumarFestivos.isFestivo(LocalDate.of(2018, Month.MARCH, 23), "col"));
+		Assert.assertFalse(
+			"Falso positivo de festivo",
+			SumarFestivos.isFestivo(LocalDate.of(2018, Month.MARCH, 23), "col")
+		);
 	}
+
 }

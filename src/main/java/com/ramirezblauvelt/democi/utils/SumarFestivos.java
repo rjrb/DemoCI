@@ -75,7 +75,7 @@ public class SumarFestivos {
 	 * @return true si es un festivo o false si es cualquier otro día
 	 */
 	public static boolean isFestivo(LocalDate fecha, String pais) {
-		// Consulto los festivos
+		// Consulta los festivos (si no están en caché)
 		final int year = fecha.getYear();
 		if(!festivosGlobales.containsKey(pais) || !festivosGlobales.get(pais).containsKey(year)) {
 			// Consulta los festivos para el país y el año
