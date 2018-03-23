@@ -34,7 +34,6 @@ public class SumarFestivos {
 
 		// Encuentra los días
 		LocalDate referencia = LocalDate.from(fechaInicial);
-		int year = -1;
 		while(dias > 0) {
 			// Suma un día
 			referencia = referencia.plusDays(paso);
