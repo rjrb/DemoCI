@@ -103,4 +103,14 @@ public class TestFechas {
 		Assert.assertTrue("No detectó el fin de semana", SumarFestivos.isFinDeSemana(LocalDate.of(2018, 3, 24)));
 		Assert.assertFalse("Falso positivo de fin de semana", SumarFestivos.isFinDeSemana(LocalDate.of(2018, 3, 23)));
 	}
+
+	@Test
+	public void testIsFestivo() {
+		Assert.assertTrue(
+				"No detectó el festivo",
+				SumarFestivos.isFestivo(LocalDate.of(2018, Month.MARCH, 30), "col")
+		);
+
+		Assert.assertFalse("Falso positivo", SumarFestivos.isFestivo(LocalDate.of(2018, Month.MARCH, 23), "col"));
+	}
 }

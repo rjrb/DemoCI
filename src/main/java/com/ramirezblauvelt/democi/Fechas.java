@@ -82,14 +82,11 @@ public class Fechas {
 		}
 
 		// Ejecuta la acción
-		String resultado = null;
-		switch (operacion) {
-			case "sf":
-				resultado = sumarFestivos(pais, fechaInicial, diasHabiles);
-				break;
-			case "sfc":
-				resultado = sumarFestivosColombia(fechaInicial, diasHabiles);
-				break;
+		String resultado;
+		if(operacion.equals("sf")) {
+			resultado = sumarFestivos(pais, fechaInicial, diasHabiles);
+		} else {
+			resultado = sumarFestivosColombia(fechaInicial, diasHabiles);
 		}
 
 		// Muestra el resultado obtenido

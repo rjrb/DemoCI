@@ -39,25 +39,8 @@ public class SumarFestivos {
 			// Suma un día
 			referencia = referencia.plusDays(paso);
 
-			// Obtiene los festivos del año
-			if(year != referencia.getYear()) {
-				year = referencia.getYear();
-				if(!festivosGlobales.containsKey(pais) || !festivosGlobales.get(pais).containsKey(year)) {
-					// Consulta los festivos para el país y el año
-					final Set<LocalDate> festivos = ConsultarFestivos.getFestivosAno(pais, year)
-							.parallelStream()
-							.map(Festivo::getDate)
-							.collect(Collectors.toSet())
-					;
-
-					// Carga los festivos
-					festivosGlobales.putIfAbsent(pais, new ConcurrentHashMap<>());
-					festivosGlobales.get(pais).putIfAbsent(year, festivos);
-				}
-			}
-
 			// Valida si el día es hábil
-			if(!isFinDeSemana(referencia) && !festivosGlobales.get(pais).get(year).contains(referencia)) {
+			if(!isFinDeSemana(referencia) && !isFestivo(referencia, pais)) {
 				dias--;
 			}
 		}
@@ -84,6 +67,32 @@ public class SumarFestivos {
 	 */
 	public static boolean isFinDeSemana(LocalDate fecha) {
 		return fecha.getDayOfWeek() == DayOfWeek.SATURDAY || fecha.getDayOfWeek() == DayOfWeek.SUNDAY;
+	}
+
+	/**
+	 * Procedimiento que indica si una fecha dada, es festivo en un país
+	 * @param fecha fecha a validar
+	 * @param pais código del país para el cual se buscarán los festivos en el servicio web
+	 * @return true si es un festivo o false si es cualquier otro día
+	 */
+	public static boolean isFestivo(LocalDate fecha, String pais) {
+		// Consulto los festivos
+		final int year = fecha.getYear();
+		if(!festivosGlobales.containsKey(pais) || !festivosGlobales.get(pais).containsKey(year)) {
+			// Consulta los festivos para el país y el año
+			final Set<LocalDate> festivos = ConsultarFestivos.getFestivosAno(pais, year)
+				.parallelStream()
+				.map(Festivo::getDate)
+				.collect(Collectors.toSet())
+			;
+
+			// Carga los festivos
+			festivosGlobales.putIfAbsent(pais, new ConcurrentHashMap<>());
+			festivosGlobales.get(pais).putIfAbsent(year, festivos);
+		}
+
+		// Verifica
+		return festivosGlobales.get(pais).get(year).contains(fecha);
 	}
 
 }
