@@ -85,8 +85,8 @@ public class Fechas {
 
 			// Valida si el país está soportado por el servicio
 			if(!ConsultarFestivos.isPaisSoportado(pais)) {
-				LOGGER.info("País '{}' no soportado", pais);
-				System.exit(1);
+				LOGGER.error("País '{}' no soportado", pais);
+				System.exit(0);
 			}
 		}
 
