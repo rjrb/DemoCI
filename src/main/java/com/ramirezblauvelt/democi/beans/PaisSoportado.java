@@ -33,64 +33,24 @@ public class PaisSoportado {
 				'}';
 	}
 
-	public static class FromDate {
-		public int day;
-		public int month;
-		public int year;
+	private static class FromDate {
+		private int day;
+		private int month;
+		private int year;
 	}
 
-	public static class ToDate {
-		public int day;
-		public int month;
-		public int year;
+	private static class ToDate {
+		private int day;
+		private int month;
+		private int year;
 	}
 
 	public String getCountryCode() {
 		return countryCode;
 	}
 
-	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
-	}
-
-	public List<String> getRegions() {
-		return regions;
-	}
-
-	public void setRegions(List<String> regions) {
-		this.regions = regions;
-	}
-
-	public List<String> getHolidayTypes() {
-		return holidayTypes;
-	}
-
-	public void setHolidayTypes(List<String> holidayTypes) {
-		this.holidayTypes = holidayTypes;
-	}
-
 	public String getFullName() {
 		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-	public FromDate getFromDate() {
-		return fromDate;
-	}
-
-	public void setFromDate(FromDate fromDate) {
-		this.fromDate = fromDate;
-	}
-
-	public ToDate getToDate() {
-		return toDate;
-	}
-
-	public void setToDate(ToDate toDate) {
-		this.toDate = toDate;
 	}
 
 }

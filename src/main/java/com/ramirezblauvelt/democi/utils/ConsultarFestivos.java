@@ -2,7 +2,7 @@ package com.ramirezblauvelt.democi.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.ramirezblauvelt.democi.beans.Error;
+import com.ramirezblauvelt.democi.beans.ErrorServicio;
 import com.ramirezblauvelt.democi.beans.Festivo;
 import com.ramirezblauvelt.democi.beans.PaisSoportado;
 
@@ -64,7 +64,7 @@ public class ConsultarFestivos {
 
 			// Valida si hubo error
 			if(respuesta.contains("error")) {
-				final Error error = gson.fromJson(respuesta, Error.class);
+				final ErrorServicio error = gson.fromJson(respuesta, ErrorServicio.class);
 				throw new IllegalArgumentException(error.getError());
 			}
 

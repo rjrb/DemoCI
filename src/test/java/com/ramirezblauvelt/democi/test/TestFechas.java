@@ -1,5 +1,6 @@
 package com.ramirezblauvelt.democi.test;
 
+import com.ramirezblauvelt.democi.beans.Festivo;
 import com.ramirezblauvelt.democi.utils.ConsultarFestivos;
 import com.ramirezblauvelt.democi.utils.SumarFestivos;
 import org.junit.Assert;
@@ -7,6 +8,9 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TestFechas {
 
@@ -147,6 +151,49 @@ public class TestFechas {
 		Assert.assertFalse(
 			"Falso positivo",
 			ConsultarFestivos.isPaisSoportado("pan")
+		);
+	}
+
+	@Test
+	public void testGetFestivosAno() {
+		// Festivos de Colombia en 2018
+		final List<LocalDate> festivosColombia2018 = Stream.of(
+				"2018-01-01",
+				"2018-01-08",
+				"2018-03-19",
+				"2018-03-29",
+				"2018-03-30",
+				"2018-05-01",
+				"2018-05-14",
+				"2018-06-04",
+				"2018-06-11",
+				"2018-07-02",
+				"2018-07-20",
+				"2018-08-07",
+				"2018-08-20",
+				"2018-10-15",
+				"2018-11-05",
+				"2018-11-12",
+				"2018-12-25"
+			)
+			.map(LocalDate::parse)
+			.collect(Collectors.toList())
+		;
+
+		// Consulta el servivio
+		final List<LocalDate> festivosServicioColombia2018 = ConsultarFestivos.getFestivosAno("col", 2018)
+			.parallelStream()
+				.map(Festivo::getDate)
+				.filter(d -> !SumarFestivos.isFinDeSemana(d))
+				.sorted()
+				.collect(Collectors.toList())
+		;
+
+		// Compara
+		Assert.assertEquals(
+			"Los conjuntos de festivos no son iguales",
+			festivosColombia2018,
+			festivosServicioColombia2018
 		);
 	}
 

@@ -1,6 +1,6 @@
 package com.ramirezblauvelt.democi.beans;
 
-public class Error {
+public class ErrorServicio {
 
 	private String error;
 
