@@ -5,12 +5,12 @@ import java.util.Objects;
 
 public class PaisSoportado {
 
-	public String countryCode;
-	public List<String> regions;
-	public List<String> holidayTypes;
-	public String fullName;
-	public FromDate fromDate;
-	public ToDate toDate;
+	private String countryCode;
+	private List<String> regions;
+	private List<String> holidayTypes;
+	private String fullName;
+	private FromDate fromDate;
+	private ToDate toDate;
 
 	@Override
 	public boolean equals(Object o) {
@@ -53,12 +53,44 @@ public class PaisSoportado {
 		this.countryCode = countryCode;
 	}
 
+	public List<String> getRegions() {
+		return regions;
+	}
+
+	public void setRegions(List<String> regions) {
+		this.regions = regions;
+	}
+
+	public List<String> getHolidayTypes() {
+		return holidayTypes;
+	}
+
+	public void setHolidayTypes(List<String> holidayTypes) {
+		this.holidayTypes = holidayTypes;
+	}
+
 	public String getFullName() {
 		return fullName;
 	}
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public FromDate getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(FromDate fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public ToDate getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(ToDate toDate) {
+		this.toDate = toDate;
 	}
 
 }

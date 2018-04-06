@@ -5,11 +5,11 @@ import com.google.gson.reflect.TypeToken;
 import com.ramirezblauvelt.democi.beans.Error;
 import com.ramirezblauvelt.democi.beans.Festivo;
 import com.ramirezblauvelt.democi.beans.PaisSoportado;
+
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -110,7 +110,7 @@ public class ConsultarFestivos {
 	 */
 	public static boolean isPaisSoportado(String pais) {
 		// Carga la variable local
-		if(pais.isEmpty()) {
+		if(PAISES_SOPORTADOS.isEmpty()) {
 			PAISES_SOPORTADOS.putAll(
 				getPaisesSoportados()
 					.parallelStream()

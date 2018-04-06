@@ -6,7 +6,6 @@ import com.ramirezblauvelt.democi.utils.Utilidades;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.Map;
@@ -81,7 +80,10 @@ public class Fechas {
 		// Si se espera el país
 		String pais = null;
 		if(argumentosEsperados == 3) {
+			// Lee el país
 			pais = args[3];
+
+			// Valida si el país está soportado por el servicio
 			if(!ConsultarFestivos.isPaisSoportado(pais)) {
 				LOGGER.info("País '{}' no soportado", pais);
 				System.exit(1);

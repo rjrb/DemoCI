@@ -1,8 +1,10 @@
 package com.ramirezblauvelt.democi.test;
 
+import com.ramirezblauvelt.democi.utils.ConsultarFestivos;
 import com.ramirezblauvelt.democi.utils.SumarFestivos;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -116,9 +118,35 @@ public class TestFechas {
 			SumarFestivos.isFestivo(LocalDate.of(2018, Month.MARCH, 30), "col")
 		);
 
+		Assert.assertTrue(
+			"No detectó el festivo",
+			SumarFestivos.isFestivo(LocalDate.of(2019, Month.JANUARY, 1), "col")
+		);
+
 		Assert.assertFalse(
 			"Falso positivo de festivo",
 			SumarFestivos.isFestivo(LocalDate.of(2018, Month.MARCH, 23), "col")
+		);
+	}
+
+	@Test
+	public void testIsPaisSoportado() {
+		// Colombia está soportado
+		Assert.assertTrue(
+			"No aceptó país soportado",
+			ConsultarFestivos.isPaisSoportado("col")
+		);
+
+		// USA está soportado
+		Assert.assertTrue(
+			"No aceptó país soportado",
+			ConsultarFestivos.isPaisSoportado("usa")
+		);
+
+		// Panamá NO está soportado
+		Assert.assertFalse(
+			"Falso positivo",
+			ConsultarFestivos.isPaisSoportado("pan")
 		);
 	}
 
