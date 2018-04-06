@@ -2,12 +2,18 @@ package com.ramirezblauvelt.democi.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ramirezblauvelt.democi.beans.Error;
 import com.ramirezblauvelt.democi.beans.Festivo;
+import com.ramirezblauvelt.democi.beans.PaisSoportado;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ConsultarFestivos {
 
@@ -16,6 +22,9 @@ public class ConsultarFestivos {
 
 	/** URL relativa de la API */
 	private static final String API_PATH = "json/v2.0";
+
+	/** Tabla de países soportados */
+	private static final ConcurrentHashMap<String, PaisSoportado> PAISES_SOPORTADOS = new ConcurrentHashMap<>();
 
 	private ConsultarFestivos() {
 
@@ -44,16 +53,73 @@ public class ConsultarFestivos {
 		) {
 			// Lee la respuesta
 			if(response.getStatus() != 200) {
+				throw new IllegalStateException("Falló : Código de error HTTP : " + response.getStatus() + " ---> " + response.getStatusInfo());
+			}
+
+			// Lee la respuesta
+			final String respuesta = response.readEntity(String.class);
+
+			// Convierte la respuesta
+			final Gson gson = new Gson();
+
+			// Valida si hubo error
+			if(respuesta.contains("error")) {
+				final Error error = gson.fromJson(respuesta, Error.class);
+				throw new IllegalArgumentException(error.getError());
+			}
+
+			// Entrega el dato
+			final Type tipoListaFestivos = new TypeToken<Set<Festivo>>(){}.getType();
+			return gson.fromJson(respuesta, tipoListaFestivos);
+		}
+	}
+
+	/**
+	 * Procedimiento para obtener, desde un servicio web, los países soportados para consultar los festivos
+	 * @return el conjunto de países soportados por el servicio Web
+	 */
+	private static Set<PaisSoportado> getPaisesSoportados() {
+
+		// Consume el servicio web
+		try (
+			Response response = ClientBuilder.newClient()
+				.target(URL_API)
+				.path(API_PATH)
+				.queryParam("action", "getSupportedCountries")
+				.request(MediaType.APPLICATION_JSON)
+				.get()
+		) {
+			// Lee la respuesta
+			if(response.getStatus() != 200) {
 				throw new IllegalStateException("Failed : HTTP error code : " + response.getStatus() + " ---> " + response.getStatusInfo());
 			}
 
 			// Convierte la respuesta
 			final Gson gson = new Gson();
-			final Type tipoListaFestivos = new TypeToken<Set<Festivo>>(){}.getType();
+			final Type tipoListaPaisesSoportados = new TypeToken<Set<PaisSoportado>>(){}.getType();
 
 			// Entrega el dato
-			return gson.fromJson(response.readEntity(String.class), tipoListaFestivos);
+			return gson.fromJson(response.readEntity(String.class), tipoListaPaisesSoportados);
 		}
+	}
+
+	/**
+	 * Indica si un país en particular está soportado por el servicio
+	 * @param pais código del país a verificar
+	 * @return true si el país está soportado o false en cualquier otro caso
+	 */
+	public static boolean isPaisSoportado(String pais) {
+		// Carga la variable local
+		if(pais.isEmpty()) {
+			PAISES_SOPORTADOS.putAll(
+				getPaisesSoportados()
+					.parallelStream()
+					.collect(Collectors.toConcurrentMap(PaisSoportado::getCountryCode, Function.identity()))
+			);
+		}
+
+		// Verifica
+		return PAISES_SOPORTADOS.containsKey(pais);
 	}
 
 }
