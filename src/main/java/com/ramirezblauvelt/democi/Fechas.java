@@ -1,6 +1,5 @@
 package com.ramirezblauvelt.democi;
 
-import com.ramirezblauvelt.democi.utils.ConsultarFestivos;
 import com.ramirezblauvelt.democi.utils.SumarFestivos;
 import com.ramirezblauvelt.democi.utils.Utilidades;
 import org.apache.logging.log4j.LogManager;
@@ -84,7 +83,7 @@ public class Fechas {
 			pais = args[3];
 
 			// Valida si el país está soportado por el servicio
-			if(!ConsultarFestivos.isPaisSoportado(pais)) {
+			if(!SumarFestivos.isPaisSoportado(pais)) {
 				LOGGER.error("País '{}' no soportado", pais);
 				System.exit(0);
 			}

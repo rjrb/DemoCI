@@ -138,19 +138,19 @@ public class TestFechas {
 		// Colombia está soportado
 		Assert.assertTrue(
 			"No aceptó país soportado",
-			ConsultarFestivos.isPaisSoportado("col")
+			SumarFestivos.isPaisSoportado("col")
 		);
 
 		// USA está soportado
 		Assert.assertTrue(
 			"No aceptó país soportado",
-			ConsultarFestivos.isPaisSoportado("usa")
+			SumarFestivos.isPaisSoportado("usa")
 		);
 
 		// Panamá NO está soportado
 		Assert.assertFalse(
 			"Falso positivo",
-			ConsultarFestivos.isPaisSoportado("pan")
+			SumarFestivos.isPaisSoportado("pan")
 		);
 	}
 

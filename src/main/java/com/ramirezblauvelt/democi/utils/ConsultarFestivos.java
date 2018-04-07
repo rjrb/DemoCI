@@ -11,9 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class ConsultarFestivos {
 
@@ -22,9 +19,6 @@ public class ConsultarFestivos {
 
 	/** URL relativa de la API */
 	private static final String API_PATH = "json/v2.0";
-
-	/** Tabla de países soportados */
-	private static final ConcurrentHashMap<String, PaisSoportado> PAISES_SOPORTADOS = new ConcurrentHashMap<>();
 
 	private ConsultarFestivos() {
 
@@ -78,7 +72,7 @@ public class ConsultarFestivos {
 	 * Procedimiento para obtener, desde un servicio web, los países soportados para consultar los festivos
 	 * @return el conjunto de países soportados por el servicio Web
 	 */
-	private static Set<PaisSoportado> getPaisesSoportados() {
+	public static Set<PaisSoportado> getPaisesSoportados() {
 
 		// Consume el servicio web
 		try (
@@ -101,25 +95,6 @@ public class ConsultarFestivos {
 			// Entrega el dato
 			return gson.fromJson(response.readEntity(String.class), tipoListaPaisesSoportados);
 		}
-	}
-
-	/**
-	 * Indica si un país en particular está soportado por el servicio
-	 * @param pais código del país a verificar
-	 * @return true si el país está soportado o false en cualquier otro caso
-	 */
-	public static boolean isPaisSoportado(String pais) {
-		// Carga la variable local
-		if(PAISES_SOPORTADOS.isEmpty()) {
-			PAISES_SOPORTADOS.putAll(
-				getPaisesSoportados()
-					.parallelStream()
-					.collect(Collectors.toConcurrentMap(PaisSoportado::getCountryCode, Function.identity()))
-			);
-		}
-
-		// Verifica
-		return PAISES_SOPORTADOS.containsKey(pais);
 	}
 
 }

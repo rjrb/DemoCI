@@ -1,16 +1,73 @@
 package com.ramirezblauvelt.democi.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ramirezblauvelt.democi.beans.Festivo;
+import com.ramirezblauvelt.democi.beans.PaisSoportado;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SumarFestivos {
 
+	/** Logger */
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	/** Archivo local para persistir los festivos */
+	private static final Path ARCHIVO_FESTIVOS = Paths.get("festivos.json");
+
 	/** Colección para almacenar los festivos por pais */
-	private static final ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>> festivosGlobales = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>> FESTIVOS_GLOBALES = new ConcurrentHashMap<>();
+
+	/** Tabla de países soportados */
+	private static final ConcurrentHashMap<String, PaisSoportado> PAISES_SOPORTADOS = new ConcurrentHashMap<>();
+
+	static {
+
+		try {
+			// Refresca el archivo cada día
+			if (Files.exists(ARCHIVO_FESTIVOS) && !Files.getLastModifiedTime(ARCHIVO_FESTIVOS).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().plusDays(1).isBefore(LocalDateTime.now())) {
+
+				// Interprete
+				final Gson gson = new Gson();
+				final Type tipoListaFestivos = new TypeToken<ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>>>(){}.getType();
+
+				try {
+					// Lee el archivo
+					final ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>> fg = gson.fromJson(
+						Files.newBufferedReader(ARCHIVO_FESTIVOS),
+						tipoListaFestivos
+					);
+
+					// Carga la variable local
+					FESTIVOS_GLOBALES.putAll(fg);
+
+				} catch (IOException ioe) {
+					LOGGER.error("Error leyendo el archivo local de festivos", ioe);
+				}
+
+			}
+
+		} catch (IOException ioe) {
+			LOGGER.error("Erros obteniedo la fecha de modificación del archivo " + ARCHIVO_FESTIVOS, ioe);
+		}
+
+
+	}
 
 	private SumarFestivos() {
 
@@ -77,7 +134,7 @@ public class SumarFestivos {
 	public static boolean isFestivo(LocalDate fecha, String pais) {
 		// Consulta los festivos (si no están en caché)
 		final int year = fecha.getYear();
-		if(!festivosGlobales.containsKey(pais) || !festivosGlobales.get(pais).containsKey(year)) {
+		if(!FESTIVOS_GLOBALES.containsKey(pais) || !FESTIVOS_GLOBALES.get(pais).containsKey(year)) {
 			// Consulta los festivos para el país y el año
 			final Set<LocalDate> festivos = ConsultarFestivos.getFestivosAno(pais, year)
 				.parallelStream()
@@ -86,12 +143,40 @@ public class SumarFestivos {
 			;
 
 			// Carga los festivos
-			festivosGlobales.putIfAbsent(pais, new ConcurrentHashMap<>());
-			festivosGlobales.get(pais).putIfAbsent(year, festivos);
+			FESTIVOS_GLOBALES.putIfAbsent(pais, new ConcurrentHashMap<>());
+			FESTIVOS_GLOBALES.get(pais).putIfAbsent(year, festivos);
+
+			// Actualiza la persistencia local
+			final Gson gson = new Gson();
+			final String json = gson.toJson(FESTIVOS_GLOBALES);
+			try {
+				Files.write(ARCHIVO_FESTIVOS, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+			} catch (IOException ioe) {
+				LOGGER.error("Error escribiendo el archivo de festivos local", ioe);
+			}
 		}
 
 		// Verifica
-		return festivosGlobales.get(pais).get(year).contains(fecha);
+		return FESTIVOS_GLOBALES.get(pais).get(year).contains(fecha);
+	}
+
+	/**
+	 * Indica si un país en particular está soportado por el servicio
+	 * @param pais código del país a verificar
+	 * @return true si el país está soportado o false en cualquier otro caso
+	 */
+	public static boolean isPaisSoportado(String pais) {
+		// Carga la variable local
+		if(PAISES_SOPORTADOS.isEmpty()) {
+			PAISES_SOPORTADOS.putAll(
+				ConsultarFestivos.getPaisesSoportados()
+					.parallelStream()
+					.collect(Collectors.toConcurrentMap(PaisSoportado::getCountryCode, Function.identity()))
+			);
+		}
+
+		// Verifica
+		return PAISES_SOPORTADOS.containsKey(pais);
 	}
 
 }

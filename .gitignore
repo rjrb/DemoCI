@@ -6,6 +6,7 @@
 /logs/
 /nbproject/private/
 /out/
+*.json
 *.log
 *.exe
 *.zip
