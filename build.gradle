@@ -4,6 +4,7 @@ version '1.0'
 apply plugin: 'java'
 apply plugin: 'java-library-distribution'
 apply plugin: 'org.sonarqube'
+apply plugin: 'jacoco'
 
 // Java
 description = 'Aplicación para sumar días hábiles a fechas de referencia'
