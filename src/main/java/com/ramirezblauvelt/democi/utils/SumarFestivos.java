@@ -40,30 +40,25 @@ public class SumarFestivos {
 
 		try {
 			// Refresca el archivo cada día
-			if (Files.exists(ARCHIVO_FESTIVOS) && !Files.getLastModifiedTime(ARCHIVO_FESTIVOS).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().plusDays(1).isBefore(LocalDateTime.now())) {
+			if (ARCHIVO_FESTIVOS.toFile().exists() && !Files.getLastModifiedTime(ARCHIVO_FESTIVOS).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().plusDays(1).isBefore(LocalDateTime.now())) {
 
 				// Interprete
 				final Gson gson = new Gson();
 				final Type tipoListaFestivos = new TypeToken<ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>>>(){}.getType();
 
-				try {
-					// Lee el archivo
-					final ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>> fg = gson.fromJson(
-						Files.newBufferedReader(ARCHIVO_FESTIVOS),
-						tipoListaFestivos
-					);
+				// Lee el archivo
+				final ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>> fg = gson.fromJson(
+					Files.newBufferedReader(ARCHIVO_FESTIVOS),
+					tipoListaFestivos
+				);
 
-					// Carga la variable local
-					FESTIVOS_GLOBALES.putAll(fg);
-
-				} catch (IOException ioe) {
-					LOGGER.error("Error leyendo el archivo local de festivos", ioe);
-				}
+				// Carga la variable local
+				FESTIVOS_GLOBALES.putAll(fg);
 
 			}
 
 		} catch (IOException ioe) {
-			LOGGER.error("Erros obteniedo la fecha de modificación del archivo " + ARCHIVO_FESTIVOS, ioe);
+			LOGGER.error("Error leyendo el archivo local de festivos " + ARCHIVO_FESTIVOS, ioe);
 		}
 
 
