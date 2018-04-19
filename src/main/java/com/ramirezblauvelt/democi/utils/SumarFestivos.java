@@ -1,14 +1,13 @@
 package com.ramirezblauvelt.democi.utils;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.ramirezblauvelt.democi.beans.ContenedorPersistencia;
 import com.ramirezblauvelt.democi.beans.Festivo;
 import com.ramirezblauvelt.democi.beans.PaisSoportado;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,38 +26,32 @@ public class SumarFestivos {
 	/** Logger */
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	/** Archivo local para persistir los festivos */
-	private static final Path ARCHIVO_FESTIVOS = Paths.get("festivos.json");
+	/** Archivo local para persistir los datos del servicio web */
+	private static final Path ARCHIVO_PERSISTENCIA = Paths.get("persistencia.json");
 
-	/** Colección para almacenar los festivos por pais */
-	private static final ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>> FESTIVOS_GLOBALES = new ConcurrentHashMap<>();
-
-	/** Tabla de países soportados */
-	private static final ConcurrentHashMap<String, PaisSoportado> PAISES_SOPORTADOS = new ConcurrentHashMap<>();
+	/** Contenedor de objetos persistidos */
+	private static ContenedorPersistencia CONTENEDOR_PERSISTENCIA = new ContenedorPersistencia();
 
 	static {
 
 		try {
+
 			// Refresca el archivo cada día
-			if (ARCHIVO_FESTIVOS.toFile().exists() && !Files.getLastModifiedTime(ARCHIVO_FESTIVOS).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().plusDays(1).isBefore(LocalDateTime.now())) {
+			if (ARCHIVO_PERSISTENCIA.toFile().exists() && !Files.getLastModifiedTime(ARCHIVO_PERSISTENCIA).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().plusDays(1).isBefore(LocalDateTime.now())) {
 
 				// Interprete
 				final Gson gson = new Gson();
-				final Type tipoListaFestivos = new TypeToken<ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>>>(){}.getType();
 
 				// Lee el archivo
-				final ConcurrentHashMap<String, ConcurrentHashMap<Integer, Set<LocalDate>>> fg = gson.fromJson(
-					Files.newBufferedReader(ARCHIVO_FESTIVOS),
-					tipoListaFestivos
+				CONTENEDOR_PERSISTENCIA = gson.fromJson(
+					Files.newBufferedReader(ARCHIVO_PERSISTENCIA),
+					ContenedorPersistencia.class
 				);
-
-				// Carga la variable local
-				FESTIVOS_GLOBALES.putAll(fg);
 
 			}
 
 		} catch (IOException ioe) {
-			LOGGER.error("Error leyendo el archivo local de festivos " + ARCHIVO_FESTIVOS, ioe);
+			LOGGER.error("Error leyendo el archivo local de festivos " + ARCHIVO_PERSISTENCIA, ioe);
 		}
 
 
@@ -129,7 +122,7 @@ public class SumarFestivos {
 	public static boolean isFestivo(LocalDate fecha, String pais) {
 		// Consulta los festivos (si no están en caché)
 		final int year = fecha.getYear();
-		if(!FESTIVOS_GLOBALES.containsKey(pais) || !FESTIVOS_GLOBALES.get(pais).containsKey(year)) {
+		if(!CONTENEDOR_PERSISTENCIA.getFestivosGlobales().containsKey(pais) || !CONTENEDOR_PERSISTENCIA.getFestivosGlobales().get(pais).containsKey(year)) {
 			// Consulta los festivos para el país y el año
 			final Set<LocalDate> festivos = ConsultarFestivos.getFestivosAno(pais, year)
 				.parallelStream()
@@ -138,21 +131,15 @@ public class SumarFestivos {
 			;
 
 			// Carga los festivos
-			FESTIVOS_GLOBALES.putIfAbsent(pais, new ConcurrentHashMap<>());
-			FESTIVOS_GLOBALES.get(pais).putIfAbsent(year, festivos);
+			CONTENEDOR_PERSISTENCIA.getFestivosGlobales().putIfAbsent(pais, new ConcurrentHashMap<>());
+			CONTENEDOR_PERSISTENCIA.getFestivosGlobales().get(pais).putIfAbsent(year, festivos);
 
 			// Actualiza la persistencia local
-			final Gson gson = new Gson();
-			final String json = gson.toJson(FESTIVOS_GLOBALES);
-			try {
-				Files.write(ARCHIVO_FESTIVOS, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-			} catch (IOException ioe) {
-				LOGGER.error("Error escribiendo el archivo de festivos local", ioe);
-			}
+			escribirPersistencia();
 		}
 
 		// Verifica
-		return FESTIVOS_GLOBALES.get(pais).get(year).contains(fecha);
+		return CONTENEDOR_PERSISTENCIA.getFestivosGlobales().get(pais).get(year).contains(fecha);
 	}
 
 	/**
@@ -162,16 +149,33 @@ public class SumarFestivos {
 	 */
 	public static boolean isPaisSoportado(String pais) {
 		// Carga la variable local
-		if(PAISES_SOPORTADOS.isEmpty()) {
-			PAISES_SOPORTADOS.putAll(
+		if(CONTENEDOR_PERSISTENCIA.getPaisesSoportados().isEmpty()) {
+			// Carga los países soportados
+			CONTENEDOR_PERSISTENCIA.getPaisesSoportados().putAll(
 				ConsultarFestivos.getPaisesSoportados()
 					.parallelStream()
 					.collect(Collectors.toConcurrentMap(PaisSoportado::getCountryCode, Function.identity()))
 			);
+
+			// Actualiza la persistencia local
+			escribirPersistencia();
 		}
 
 		// Verifica
-		return PAISES_SOPORTADOS.containsKey(pais);
+		return CONTENEDOR_PERSISTENCIA.getPaisesSoportados().containsKey(pais);
+	}
+
+	/**
+	 * Escribe la persistencia local
+	 */
+	private static void escribirPersistencia() {
+		final Gson gson = new Gson();
+		final String json = gson.toJson(CONTENEDOR_PERSISTENCIA);
+		try {
+			Files.write(ARCHIVO_PERSISTENCIA, json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+		} catch (IOException ioe) {
+			LOGGER.error("Error escribiendo el archivo de persistencia local", ioe);
+		}
 	}
 
 }

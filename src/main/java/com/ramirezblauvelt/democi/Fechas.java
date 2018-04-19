@@ -36,11 +36,26 @@ public class Fechas {
 	 * @param args argumentos de la línea de comandos
 	 */
 	public static void main(String[] args) {
+		// Ejecuta el proceso
+		if(!procesar(args)) {
+			System.exit(1);
+		}
+
+		// Proceso exitoso
+		System.exit(0);
+	}
+
+	/**
+	 * Procedimiento que se encarga del procesamiento de los argumentos y de entregar los resultados
+	 * @param args argumentos de línea de comandos
+	 * @return {@code true} si el proceso fue exitoso o {@code false} si hubo algún error
+	 */
+	public static boolean procesar(String[] args) {
 		// Integridad
 		if(args.length == 0) {
 			LOGGER.error("No especificó una acción. Se espera uno de los siguientes parámetros:");
 			EXPECTED_ARGS.forEach(Fechas::accept);
-			System.exit(1);
+			return false;
 		}
 
 		// Lee el argumento
@@ -48,7 +63,7 @@ public class Fechas {
 		if(!EXPECTED_ARGS.containsKey(operacion)) {
 			LOGGER.error("No especificó una acción válida. Se espera una de las siguientes acciones:");
 			EXPECTED_ARGS.keySet().forEach(LOGGER::error);
-			System.exit(1);
+			return false;
 		}
 
 		// Lee la cantidad de argumentos entregados
@@ -59,21 +74,21 @@ public class Fechas {
 		if(argumentos != argumentosEsperados) {
 			LOGGER.error("Se esperan {} argumentos para la operación {} y se recibieron {}", argumentosEsperados, operacion, argumentos);
 			LOGGER.error("Modo de operación: {} {}", operacion, EXPECTED_ARGS.get(operacion));
-			System.exit(1);
+			return false;
 		}
 
 		// Lee la fecha
 		final LocalDate fechaInicial = Utilidades.getFecha(args[1]);
 		if(fechaInicial == null) {
 			LOGGER.error("La fecha ingresada '{}' no tiene un formato ISO válido", args[1]);
-			System.exit(1);
+			return false;
 		}
 
 		// Lee la cantidad de días a sumar
 		final Integer diasHabiles = Utilidades.getDiasHabiles(args[2]);
 		if(diasHabiles == null) {
 			LOGGER.error("Los días ingresados '{}' no son un número entero válido", args[2]);
-			System.exit(1);
+			return false;
 		}
 
 		// Si se espera el país
@@ -85,7 +100,7 @@ public class Fechas {
 			// Valida si el país está soportado por el servicio
 			if(!SumarFestivos.isPaisSoportado(pais)) {
 				LOGGER.error("País '{}' no soportado", pais);
-				System.exit(0);
+				return true;
 			}
 		}
 
@@ -101,7 +116,7 @@ public class Fechas {
 		LOGGER.info(resultado);
 
 		// Proceso exitoso
-		System.exit(0);
+		return true;
 	}
 
 	/**

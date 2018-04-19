@@ -1,18 +1,30 @@
 package com.ramirezblauvelt.democi.test;
 
+import com.ramirezblauvelt.democi.Fechas;
 import com.ramirezblauvelt.democi.beans.Festivo;
 import com.ramirezblauvelt.democi.utils.ConsultarFestivos;
 import com.ramirezblauvelt.democi.utils.SumarFestivos;
+import org.hamcrest.core.StringContains;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TestFechas {
+
+	/* Log de eventos */
+	static {
+		System.setProperty("log4j2.configurationFile", "com/ramirezblauvelt/democi/log4j2.xml");
+	}
+
 
 	@Test
 	public void testSumarDiasHabilesConFestivos() {
@@ -195,6 +207,150 @@ public class TestFechas {
 			festivosColombia2018,
 			festivosServicioColombia2018
 		);
+	}
+
+
+	/** Capturador de consola */
+	private static ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+	@BeforeClass
+	public static void entorno() {
+		System.setOut(new PrintStream(out));
+	}
+
+	@Test
+	public void testSinParametro() {
+		Fechas.procesar(new String[] {});
+		Assert.assertThat(out.toString(), StringContains.containsString("No especificó una acción. Se espera uno de los siguientes parámetros"));
+	}
+
+	@Test
+	public void testAccionInvalida() {
+		Fechas.procesar(new String[] {"no_valido"});
+		Assert.assertThat(out.toString(), StringContains.containsString("No especificó una acción válida. Se espera una de las siguientes acciones"));
+	}
+
+	@Test
+	public void testAccionSfcSinArgumentos() {
+		Fechas.procesar(new String[] {"sfc"});
+		Assert.assertThat(out.toString(), StringContains.containsString("Se esperan 2 argumentos para la operación sfc y se recibieron 0"));
+	}
+
+	@Test
+	public void testAccionSfSinArgumentos() {
+		Fechas.procesar(new String[] {"sf"});
+		Assert.assertThat(out.toString(), StringContains.containsString("Se esperan 3 argumentos para la operación sf y se recibieron 0"));
+	}
+
+	@Test
+	public void testAccionSfcSinDias() {
+		Fechas.procesar(new String[] {"sfc", "2018-03-23"});
+		Assert.assertThat(out.toString(), StringContains.containsString("Se esperan 2 argumentos para la operación sfc y se recibieron 1"));
+	}
+
+	@Test
+	public void testAccionSfcConDiasInvalidos() {
+		Fechas.procesar(new String[] {"sfc", "2018-03-23", "zfdfsd"});
+		Assert.assertThat(out.toString(), StringContains.containsString("No se pudo convertir la cantidad de días 'zfdfsd'"));
+	}
+
+	@Test
+	public void testAccionSfcConFechaInvalida() {
+		Fechas.procesar(new String[] {"sfc", "20180323", "zfdfsd"});
+		Assert.assertThat(out.toString(), StringContains.containsString("No se pudo convertir la fecha '20180323'"));
+	}
+
+	@Test
+	public void testSumarFestivosColombia() {
+		// Datos
+		final List<DatosPrueba> datos = new ArrayList<>();
+		datos.add(new DatosPrueba("col", LocalDate.of(2018, Month.MARCH, 23), 10, LocalDate.of(2018, Month.APRIL, 10)));
+		datos.add(new DatosPrueba("col", LocalDate.of(2018, Month.APRIL, 30), 5, LocalDate.of(2018, Month.MAY, 8)));
+		datos.add(new DatosPrueba("col", LocalDate.of(2017, Month.DECEMBER, 24), 15, LocalDate.of(2018, Month.JANUARY, 17)));
+
+		// Plantilla de resultado correcto
+		final String resultadoEsperado = "[INFO] - El resultado de sumar '%s' días hábiles en '%s' a la fecha '%s' es: '%s'";
+
+		// Ejecuta las pruebas
+		for(DatosPrueba dp : datos) {
+			Fechas.procesar(new String[]{"sfc", dp.getFechaReferencia().toString(), String.valueOf(dp.getDiasHabiles())});
+			Assert.assertThat(
+					out.toString(),
+					StringContains.containsString(
+							String.format(
+									resultadoEsperado,
+									dp.getDiasHabiles(),
+									dp.getPais(),
+									dp.getFechaReferencia(),
+									dp.getFechaEsperada()
+							)
+					)
+			);
+		}
+	}
+
+	@Test
+	public void testSumarFestivosPais() {
+		// Datos
+		final List<DatosPrueba> datos = new ArrayList<>();
+		datos.add(new DatosPrueba("col", LocalDate.of(2018, Month.MARCH, 23), 10, LocalDate.of(2018, Month.APRIL, 10)));
+		datos.add(new DatosPrueba("usa", LocalDate.of(2017, Month.DECEMBER, 24), 15, LocalDate.of(2018, Month.JANUARY, 12)));
+
+		// Plantilla de resultado correcto
+		final String resultadoEsperado = "[INFO] - El resultado de sumar '%s' días hábiles en '%s' a la fecha '%s' es: '%s'";
+
+		// Ejecuta las pruebas
+		for(DatosPrueba dp : datos) {
+			Fechas.procesar(new String[]{"sf", dp.getFechaReferencia().toString(), String.valueOf(dp.getDiasHabiles()), dp.getPais()});
+			Assert.assertThat(
+					out.toString(),
+					StringContains.containsString(
+							String.format(
+									resultadoEsperado,
+									dp.getDiasHabiles(),
+									dp.getPais(),
+									dp.getFechaReferencia(),
+									dp.getFechaEsperada()
+							)
+					)
+			);
+		}
+	}
+
+
+	/**
+	 * Bean para datos de prueba
+	 */
+	static class DatosPrueba {
+
+		private String pais;
+		private LocalDate fechaReferencia;
+		private int diasHabiles;
+		private LocalDate fechaEsperada;
+
+		DatosPrueba(String pais, LocalDate fechaReferencia, int diasHabiles, LocalDate fechaEsperada) {
+			this.pais = pais;
+			this.fechaReferencia = fechaReferencia;
+			this.diasHabiles = diasHabiles;
+			this.fechaEsperada = fechaEsperada;
+		}
+
+		String getPais() {
+			return pais;
+		}
+
+		LocalDate getFechaReferencia() {
+			return fechaReferencia;
+		}
+
+		int getDiasHabiles() {
+			return diasHabiles;
+		}
+
+		LocalDate getFechaEsperada() {
+			return fechaEsperada;
+		}
+
 	}
 
 }
