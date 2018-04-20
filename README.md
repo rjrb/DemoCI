@@ -1,11 +1,22 @@
 # Introducción
 Proyecto pequeño en Java, con Gradle, jUnit y pruebas automatizadas con Python, para ilustar el uso de VSTS para CI/CD
 
+[![Visual Studio Team Services](https://sophosproyectos.visualstudio.com/_apis/public/build/definitions/92704e0a-93c2-4444-a919-6df362b72412/2/badge)](https://sophosproyectos.visualstudio.com/_apis/public/build/definitions/92704e0a-93c2-4444-a919-6df362b72412/2/badge)
+
 # ¿Qué hace el programa?
 
 Suma días hábiles a fechas, a partir de la consulta de los feriados de un país, desde un servicio web
 
+# Prerrequisitos
+
+1. Java 8
+1. Conexión a Internet
+1. Intérprete de Python en el ambiente de certificación
+1. Acceso a una consola
+
 # ¿Cómo se utiliza?
+
+Es una programa Java stand-alone de línea de comandos, que requiere una serie de argumentos para operar
 
 ```
 java -jar Demo-[version].jar [Acción] [Fecha de referencia] [Días a sumar] [[País]]
