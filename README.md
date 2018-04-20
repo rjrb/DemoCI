@@ -35,10 +35,11 @@ Es la fecha a partir de la cual, se sumarán los días hábiles indicados.
 
 Corresponde a un entero con la cantidad de días hábiles a sumarle a la fecha de referencia, según el país elegido y los días feriados que tenga
 
-## País (requerido sólo para acción `sf`)
+## País
 
 Corresponde al código del país para el cual, se debe hacer la suma de los días hábiles
-> Para la acción `sfc` siempre corresponde internamente a `col`
+> Requerido sólo para acción `sf`
+>> Para la acción `sfc` siempre corresponde internamente a `col`
 
 # Ejemplos
 
