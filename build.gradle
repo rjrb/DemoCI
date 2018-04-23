@@ -14,7 +14,7 @@ targetCompatibility = 1.8
 
 // Ejecutar y depurar sin 'application' plugin
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'com.ramirezblauvelt.sophos.atm.ATM'
+    ext.mainClass = 'com.ramirezblauvelt.democi.Fechas'
 }
 
 // Maven
