@@ -38,7 +38,7 @@ for i in range(len(pruebas)):
 print('........................')
 
 # Plantilla de resultados correctos
-plantilla = "[INFO] - El resultado de sumar '_dias_' días hábiles en '_pais_' a la fecha '_referencia_' es: '_esperado_'"
+plantilla = "El resultado de sumar '_dias_' días hábiles en '_pais_' a la fecha '_referencia_' es: '_esperado_'"
 
 # Datos de prueba
 d = {
