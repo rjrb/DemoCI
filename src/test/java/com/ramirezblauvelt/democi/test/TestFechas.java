@@ -260,6 +260,7 @@ public class TestFechas {
 		Assert.assertThat(out.toString(), StringContains.containsString("No se pudo convertir la fecha '20180323'"));
 	}
 
+	@Test
 	public void testSumarFestivosColombia() {
 		// Datos
 		final List<DatosPrueba> datos = new ArrayList<>();
@@ -268,7 +269,7 @@ public class TestFechas {
 		datos.add(new DatosPrueba("col", LocalDate.of(2017, Month.DECEMBER, 24), 15, LocalDate.of(2018, Month.JANUARY, 17)));
 
 		// Plantilla de resultado correcto
-		final String resultadoEsperado = "[INFO] - El resultado de sumar '%s' días hábiles en '%s' a la fecha '%s' es: '%s'";
+		final String resultadoEsperado = "El resultado de sumar '%s' días hábiles en '%s' a la fecha '%s' es: '%s'";
 
 		// Ejecuta las pruebas
 		for(DatosPrueba dp : datos) {
@@ -288,6 +289,7 @@ public class TestFechas {
 		}
 	}
 
+	@Test
 	public void testSumarFestivosPais() {
 		// Datos
 		final List<DatosPrueba> datos = new ArrayList<>();
@@ -295,7 +297,7 @@ public class TestFechas {
 		datos.add(new DatosPrueba("usa", LocalDate.of(2017, Month.DECEMBER, 24), 15, LocalDate.of(2018, Month.JANUARY, 12)));
 
 		// Plantilla de resultado correcto
-		final String resultadoEsperado = "[INFO] - El resultado de sumar '%s' días hábiles en '%s' a la fecha '%s' es: '%s'";
+		final String resultadoEsperado = "El resultado de sumar '%s' días hábiles en '%s' a la fecha '%s' es: '%s'";
 
 		// Ejecuta las pruebas
 		for(DatosPrueba dp : datos) {
