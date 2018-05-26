@@ -12,7 +12,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-// Ejecutar y depurar sin 'application' plugin
+// Ejecutar y depurar sin 'application' plugin en Netbeans
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'com.ramirezblauvelt.democi.Fechas'
 }
@@ -21,6 +21,25 @@ if (!hasProperty('mainClass')) {
 repositories {
     mavenCentral()
 }
+
+// AWS
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.228'
+    }
+}
+
 
 // Dependencias
 dependencies {
@@ -31,13 +50,14 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.10.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'
 
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.1.0'
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '1.1.0'
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 // Java Library Distribution
 tasks.distTar.enabled = false
-tasks.distZip.enabled = false
-distZip.shouldRunAfter(build)
 
 // JAR
 jar {
@@ -82,3 +102,17 @@ buildscript {
         classpath "gradle.plugin.com.zoltu.gradle.plugin:git-versioning:3.0.3"
     }
 }
+
+// Paquete para AWS Lambda
+task buildZip(type: Zip) {
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.runtime
+    }
+}
+build.dependsOn buildZip
+
+// Muestra la versión que se generará
+def versionInfo = ZoltuGitVersioning.versionInfo
+print "${versionInfo.major}.${versionInfo.minor}.${versionInfo.commitCount}" + System.getProperty("line.separator")
