@@ -28,7 +28,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE"
     }
 }
 
@@ -36,28 +36,30 @@ apply plugin: "io.spring.dependency-management"
 
 dependencyManagement {
     imports {
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.228'
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.337'
     }
 }
 
 
 // Dependencias
 dependencies {
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1'
     compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.26'
     compile group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '2.26'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.10.0'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
 
-    compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.1.0'
-    compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '1.1.0'
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.2.0'
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '1.2.0'
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-log4j2', version: '1.1.0'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 // Java Library Distribution
 tasks.distTar.enabled = false
+tasks.distZip.enabled = false
 
 // JAR
 jar {
@@ -80,7 +82,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
     }
 }
 
@@ -104,14 +106,15 @@ buildscript {
 }
 
 // Paquete para AWS Lambda
-task buildZip(type: Zip) {
+task buildZipAWS(type: Zip) {
+    archiveName = 'DemoCI.zip'
     from compileJava
     from processResources
     into('lib') {
         from configurations.runtime
     }
 }
-build.dependsOn buildZip
+build.dependsOn buildZipAWS
 
 // Muestra la versión que se generará
 def versionInfo = ZoltuGitVersioning.versionInfo

@@ -36,6 +36,9 @@ public class Fechas {
 	 * @param args argumentos de la línea de comandos
 	 */
 	public static void main(String[] args) {
+		// Elimina Appender innecesario
+		Utilidades.eliminarAppender("Lambda");
+
 		// Ejecuta el proceso
 		if(!procesar(args)) {
 			System.exit(1);
