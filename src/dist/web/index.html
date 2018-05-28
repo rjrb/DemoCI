@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Demo VSTS y AWS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Teko:400,700" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="main.css">
+    <script src="main.js"></script>
+    <link rel="icon" href="favicon.png">
+</head>
+
+<body>
+    <section id="contact">
+        <div class="section-content">
+            <h1 class="section-header">Demo
+                <span class="content-header wow fadeIn " data-wow-delay="0.5s" data-wow-duration="2s"> AWS</span>
+            </h1>
+            <h3>Sumar días hábiles con festivos (con AWS Lambda, API Gateway, DynamoDB y S3)</h3>
+        </div>
+        <div class="contact-section">
+            <div class="container">
+                <form id="formulario">
+                    <div class="col-md-6 form-line">
+                        <div class="form-group">
+                            <label for="fechaInicial">Fecha inicial</label>
+                            <input type="date" class="form-control" id="fechaInicial" placeholder="Fecha inicial para el cálculo" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="diasHabilesSumar">Días hábiles</label>
+                            <input type="number" class="form-control" id="diasHabilesSumar" placeholder="Días hábiles a sumar a la fecha inicial" value="10" min="-365" max="365" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pais">País</label>
+                            <select class="form-control" id="pais" title="País para calcular los días festivos" required>
+                                <option value="col">Colombia</option>
+                                <option value="usa">USA</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="response">Respuesta del servicio</label>
+                            <textarea class="form-control" id="response" placeholder="Respuesta del servicio"></textarea>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-default submit" onclick="invokeRestApi()">
+                                <i class="fa fa-paper-plane" aria-hidden="true"></i> Enviar solicitud</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
