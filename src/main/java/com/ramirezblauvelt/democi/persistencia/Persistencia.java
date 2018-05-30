@@ -1,9 +1,8 @@
 package com.ramirezblauvelt.democi.persistencia;
 
-import com.ramirezblauvelt.democi.aws.ConstantesAWS;
 import com.ramirezblauvelt.democi.beans.ContenedorPersistencia;
 
-public interface Persistencia extends ConstantesAWS {
+public interface Persistencia {
 
 	/**
 	 * Establece la persistencia local accesible, según el lugar de ejecución

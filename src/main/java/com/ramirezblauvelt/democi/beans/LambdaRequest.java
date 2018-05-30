@@ -1,15 +1,15 @@
-package com.ramirezblauvelt.democi.aws;
+package com.ramirezblauvelt.democi.beans;
 
-public class Request {
+public class LambdaRequest {
 
 	private String fechaInicial;
 	private int diasHabilesSumar;
 	private String pais;
 
-	public Request() {
+	public LambdaRequest() {
 	}
 
-	public Request(String fechaInicial, int diasHabilesSumar, String pais) {
+	public LambdaRequest(String fechaInicial, int diasHabilesSumar, String pais) {
 		this.fechaInicial = fechaInicial;
 		this.diasHabilesSumar = diasHabilesSumar;
 		this.pais = pais;

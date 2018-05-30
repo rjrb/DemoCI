@@ -2,8 +2,8 @@ package com.ramirezblauvelt.democi.utils;
 
 import com.ramirezblauvelt.democi.beans.ContenedorPersistencia;
 import com.ramirezblauvelt.democi.persistencia.Persistencia;
+import com.ramirezblauvelt.democi.persistencia.PersistenciaAWS;
 import com.ramirezblauvelt.democi.persistencia.PersistenciaLocal;
-import com.ramirezblauvelt.democi.persistencia.PersistenciaRemota;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -82,8 +82,7 @@ public class Utilidades {
 	 * @return entrega la instancia del contenedor
 	 */
 	public static ContenedorPersistencia getPersistencia() {
-//		final Persistencia persistencia = new PersistenciaRemota();
-		final Persistencia persistencia = LOCAL ? new PersistenciaLocal() : new PersistenciaRemota();
+		final Persistencia persistencia = LOCAL ? new PersistenciaLocal() : new PersistenciaAWS();
 		return persistencia.getPersistencia();
 	}
 
@@ -92,7 +91,7 @@ public class Utilidades {
 	 * @param contenedorPersistencia registra la instancia del contenedor
 	 */
 	public static void setPersistencia(ContenedorPersistencia contenedorPersistencia) {
-		final Persistencia persistencia = LOCAL ? new PersistenciaLocal() : new PersistenciaRemota();
+		final Persistencia persistencia = LOCAL ? new PersistenciaLocal() : new PersistenciaAWS();
 		persistencia.setPersistencia(contenedorPersistencia);
 	}
 

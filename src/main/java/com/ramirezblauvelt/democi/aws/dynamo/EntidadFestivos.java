@@ -8,7 +8,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import java.util.List;
 
 @DynamoDBTable(tableName = "Festivos")
-public class ItemFestivos {
+public class EntidadFestivos {
 
 	private String pais;
 	private int yyyy;

@@ -14,7 +14,7 @@ import java.nio.file.StandardOpenOption;
 public class PersistenciaLocal implements Persistencia {
 
 	/** Archivo local para persistir los datos del servicio web */
-	private static final Path PATH_PERSISTENCIA = Paths.get(ARCHIVO_PERSISTENCIA);
+	private static final Path PATH_PERSISTENCIA = Paths.get("persistencia.json");
 
 	/* Log de eventos */
 	private static final Logger LOGGER = LogManager.getLogger();

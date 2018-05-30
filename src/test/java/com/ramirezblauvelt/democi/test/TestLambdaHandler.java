@@ -1,9 +1,10 @@
 package com.ramirezblauvelt.democi.test;
 
 import com.ramirezblauvelt.democi.aws.LambdaHandler;
-import com.ramirezblauvelt.democi.aws.Request;
+import com.ramirezblauvelt.democi.beans.LambdaRequest;
 import org.apache.logging.log4j.message.FormattedMessage;
 import org.apache.logging.log4j.message.Message;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,13 +29,12 @@ public class TestLambdaHandler {
 		final Message m = new FormattedMessage("El resultado de sumar '{}' días hábiles en '{}' a la fecha '{}' es: '{}'", d, c, f, n);
 
 		// Petición
-		final Request r = new Request(f, d, p);
+		final LambdaRequest r = new LambdaRequest(f, d, p);
 
 		// Prueba
-		Assert.assertEquals(
-			"La fecha esperada no coincide",
-			m.getFormattedMessage(),
-			lh.handleRequest(r, null)
+		Assert.assertThat(
+			lh.handleRequest(r, null),
+			CoreMatchers.containsString(n.toString())
 		);
 	}
 
@@ -50,7 +50,7 @@ public class TestLambdaHandler {
 		final Message m = new FormattedMessage("La fecha ingresada '{}' no tiene un formato ISO válido", f);
 
 		// Petición
-		final Request r = new Request(f, d, p);
+		final LambdaRequest r = new LambdaRequest(f, d, p);
 
 		// Prueba
 		Assert.assertEquals(
@@ -71,7 +71,7 @@ public class TestLambdaHandler {
 		final Message m = new FormattedMessage("País '{}' no soportado", p);
 
 		// Petición
-		final Request r = new Request(f, d, p);
+		final LambdaRequest r = new LambdaRequest(f, d, p);
 
 		// Prueba
 		Assert.assertEquals(
