@@ -78,7 +78,7 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 			nombrePais,
 			fechaInicial,
 			nuevaFecha,
-			DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM).format(nuevaFecha)
+			DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(nuevaFecha)
 		);
 
 		// Registra el resultado
