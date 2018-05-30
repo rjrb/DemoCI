@@ -32,8 +32,11 @@ function invokeRestApi() {
         return;
     }
 
+    // Área de texto
+    var txtResponse = $('#response');
+
     // Limpia
-    document.getElementById("response").value = "";
+    txtResponse.val('');
 
     // Lee los valores del formulario
     var fechaInicial = $("#fechaInicial").val();
@@ -58,7 +61,7 @@ function invokeRestApi() {
     xhr.send(JSON.stringify(request));
 
     xhr.onloadend = function () {
-        document.getElementById("response").value = xhr.responseText;
+        document.getElementById("response").value = JSON.parse(xhr.responseText);
     };
 }
 
