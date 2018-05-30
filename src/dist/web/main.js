@@ -7,7 +7,7 @@ window.onload = init;
  */
 function init() {
     // Fecha por defecto
-    document.getElementById('fechaInicial').defaultValue = new Date().toISOString().slice(0, 10);
+    $('#fechaInicial').val(new Date().toISOString().slice(0, 10));
 
     // Carga la lista de países permitidos
     var url = "https://v30stkwesf.execute-api.us-east-1.amazonaws.com/v1/paisessoportados/";
