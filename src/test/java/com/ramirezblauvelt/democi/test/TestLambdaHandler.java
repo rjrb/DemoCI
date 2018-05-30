@@ -2,6 +2,8 @@ package com.ramirezblauvelt.democi.test;
 
 import com.ramirezblauvelt.democi.aws.LambdaHandler;
 import com.ramirezblauvelt.democi.aws.Request;
+import org.apache.logging.log4j.message.FormattedMessage;
+import org.apache.logging.log4j.message.Message;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,21 +17,68 @@ public class TestLambdaHandler {
 
 	@Test
 	public void testHandler() {
-		// Petición 1
-		final Request r1 = new Request("2018-03-23", 10, "col");
+		// Datos de entrada
+		final String f = "2018-03-23";
+		final int d = 10;
+		final String p = "col";
+		final String c = "Colombia";
 
-		// Prueba 1
+		// Resultado
+		final LocalDate n = LocalDate.of(2018, Month.APRIL, 10);
+		final Message m = new FormattedMessage("El resultado de sumar '{}' días hábiles en '{}' a la fecha '{}' es: '{}'", d, c, f, n);
+
+		// Petición
+		final Request r = new Request(f, d, p);
+
+		// Prueba
 		Assert.assertEquals(
 			"La fecha esperada no coincide",
-			LocalDate.of(2018, Month.APRIL, 10).toString(),
-			lh.handleRequest(r1, null)
+			m.getFormattedMessage(),
+			lh.handleRequest(r, null)
 		);
+	}
 
-		// Petición 2
-		final Request r2 = new Request("201803", 10, "col");
+	@Test
+	public void testHandlerErrorFecha() {
+		// Datos de entrada
+		final String f = "20180323";
+		final int d = 10;
+		final String p = "col";
 
-		// Prueba 2
-		Assert.assertNull("Se esperaba nulo", lh.handleRequest(r2, null));
+		// Resultado
+		final LocalDate n = LocalDate.of(2018, Month.APRIL, 10);
+		final Message m = new FormattedMessage("La fecha ingresada '{}' no tiene un formato ISO válido", f);
+
+		// Petición
+		final Request r = new Request(f, d, p);
+
+		// Prueba
+		Assert.assertEquals(
+			"La fecha esperada no coincide",
+			m.getFormattedMessage(),
+			lh.handleRequest(r, null)
+		);
+	}
+
+	@Test
+	public void testHandlerErrorPais() {
+		// Datos de entrada
+		final String f = "2018-04-01";
+		final int d = 5;
+		final String p = "pan";
+
+		// Resultado
+		final Message m = new FormattedMessage("País '{}' no soportado", p);
+
+		// Petición
+		final Request r = new Request(f, d, p);
+
+		// Prueba
+		Assert.assertEquals(
+			"La fecha esperada no coincide",
+			m.getFormattedMessage(),
+			lh.handleRequest(r, null)
+		);
 	}
 
 }

@@ -124,4 +124,19 @@ public class SumarFestivos {
 		return contenedorPersistencia.getPaisesSoportados().containsKey(pais);
 	}
 
+	/**
+	 * Entrega el nombre completo del país, a partir de sus código, si éste está soportado por la API
+	 * @param codigoPais código del país a buscar
+	 * @return el nombre completo del país referido por el código
+	 */
+	public static String getNombrePais(String codigoPais) {
+		// Valida que el país esté soportado
+		if(!isPaisSoportado(codigoPais)) {
+			return null;
+		}
+
+		// Entrega el nombre del país
+		return contenedorPersistencia.getPaisesSoportados().get(codigoPais).getFullName();
+	}
+
 }

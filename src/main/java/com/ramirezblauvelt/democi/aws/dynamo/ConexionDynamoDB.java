@@ -18,10 +18,10 @@ public class ConexionDynamoDB {
 	public static AmazonDynamoDB getCliente() {
 		// Crea el cliente
 		return AmazonDynamoDBClientBuilder
-			       .standard()
-			       .withRegion(Regions.US_EAST_1)
-			       .build()
-			;
+	       .standard()
+		       .withRegion(Regions.US_EAST_1)
+		       .build()
+		;
 	}
 
 	/**

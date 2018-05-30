@@ -6,11 +6,12 @@ import com.ramirezblauvelt.democi.utils.SumarFestivos;
 import com.ramirezblauvelt.democi.utils.Utilidades;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.FormattedMessage;
+import org.apache.logging.log4j.message.Message;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 public class LambdaHandler implements RequestHandler<Request, String> {
 
@@ -43,15 +44,22 @@ public class LambdaHandler implements RequestHandler<Request, String> {
 		LOGGER.info("Petición recibida el {}", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		LOGGER.info("Fecha inicial: {}", fechaInicial);
 		LOGGER.info("Días hábiles a sumar: {}", dias);
-		LOGGER.info("País: {}", dias);
+		LOGGER.info("País: {}", pais);
 
-		// Convierte la fecha
-		LocalDate fecha;
-		try {
-			fecha = LocalDate.parse(fechaInicial, DateTimeFormatter.ISO_LOCAL_DATE);
-		} catch (DateTimeParseException dtpe) {
-			LOGGER.fatal("La fecha recibida no tiene un formato yyyy-MM-dd válido: '" + fechaInicial + "'", dtpe);
-			return null;
+		// Convierte la fecha (si no la puede convertir, el formato no es válido)
+		LocalDate fecha = Utilidades.getFecha(fechaInicial);
+		if(fecha == null) {
+			final Message m = new FormattedMessage("La fecha ingresada '{}' no tiene un formato ISO válido", fechaInicial);
+			LOGGER.error(m);
+			return m.getFormattedMessage();
+		}
+
+		// Obtiene el nombre del país (si no lo encuentra, es porque no está soportado)
+		final String nombrePais = SumarFestivos.getNombrePais(pais);
+		if(nombrePais == null) {
+			final Message m = new FormattedMessage("País '{}' no soportado", pais);
+			LOGGER.error(m);
+			return m.getFormattedMessage();
 		}
 
 		// Obtiene el resultado
@@ -61,14 +69,20 @@ public class LambdaHandler implements RequestHandler<Request, String> {
 			pais
 		);
 
-		// Resultado
-		final String resultado = "El resultado de sumar '" + dias + "' días hábiles en '" + pais + "' a la fecha '" + fechaInicial + "' es: '" + nuevaFecha + "'";
+		// Mensaje de salida
+		final Message resultado = new FormattedMessage(
+			"El resultado de sumar '{}' días hábiles en '{}' a la fecha '{}' es: '{}'",
+			dias,
+			nombrePais,
+			fechaInicial,
+			nuevaFecha
+		);
 
 		// Registra el resultado
 		LOGGER.info(resultado);
 
 		// Retorna el resultado
-		return nuevaFecha.toString();
+		return resultado.getFormattedMessage();
 	}
 
 }
