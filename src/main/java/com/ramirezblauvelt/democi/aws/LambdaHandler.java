@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Locale;
 
 public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 
@@ -78,7 +79,7 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 			nombrePais,
 			fechaInicial,
 			nuevaFecha,
-			DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(nuevaFecha)
+			DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(new Locale("es", "CO")).format(nuevaFecha)
 		);
 
 		// Registra el resultado
