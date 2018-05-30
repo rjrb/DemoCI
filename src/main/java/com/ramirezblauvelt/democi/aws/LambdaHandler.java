@@ -74,12 +74,15 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 
 		// Mensaje de salida
 		final Message resultado = new FormattedMessage(
-			"El resultado de sumar {} días hábiles en {} a la fecha {} es: {} ({})",
+			"El resultado de sumar {} días hábiles en {} a la fecha {} es: \n{} ({})",
 			dias,
 			nombrePais,
 			fechaInicial,
 			nuevaFecha,
-			DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(new Locale("es", "CO")).format(nuevaFecha)
+			DateTimeFormatter
+				.ofLocalizedDate(FormatStyle.FULL)
+				.withLocale(new Locale("es", "CO"))
+				.format(nuevaFecha)
 		);
 
 		// Registra el resultado
