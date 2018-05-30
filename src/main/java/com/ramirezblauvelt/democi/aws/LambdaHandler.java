@@ -13,6 +13,7 @@ import org.apache.logging.log4j.message.Message;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 
@@ -72,11 +73,12 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 
 		// Mensaje de salida
 		final Message resultado = new FormattedMessage(
-			"El resultado de sumar '{}' días hábiles en '{}' a la fecha '{}' es: '{}'",
+			"El resultado de sumar {} días hábiles en {} a la fecha {} es: {} ({})",
 			dias,
 			nombrePais,
 			fechaInicial,
-			nuevaFecha
+			nuevaFecha,
+			DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM).format(nuevaFecha)
 		);
 
 		// Registra el resultado
