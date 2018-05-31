@@ -22,6 +22,10 @@ public class UtilidadesDynamoDB {
 	/* Log de eventos */
 	private static final Logger LOGGER = LogManager.getLogger();
 
+	private UtilidadesDynamoDB() {
+
+	}
+
 	/**
 	 * Consulta todos los festivos registrados en el sistema
 	 * @return la estructura de datos en memoria

@@ -30,7 +30,7 @@ public class UtilidadesLambda {
 		;
 
 		// Invoca la Lambda
-		final List<PaisSoportadoAPI> paises = psService.handle_request();
+		final List<PaisSoportadoAPI> paises = psService.handleRequest();
 
 		// Crea la estructura
 		return crearListaPaisesSoportados(paises);

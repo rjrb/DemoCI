@@ -8,6 +8,6 @@ import java.util.List;
 public interface PaisesSoportadosLambda {
 
 	@LambdaFunction(functionName="PaisesSoportados")
-	List<PaisSoportadoAPI> handle_request();
+	List<PaisSoportadoAPI> handleRequest();
 
 }
