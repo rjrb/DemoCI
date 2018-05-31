@@ -138,7 +138,7 @@ public class Fechas {
 		);
 
 		// Mensaje
-		return "El resultado de sumar '" + dias + "' días hábiles en '" + pais + "' a la fecha '" + fechaInicial + "' es: '" + nuevaFecha + "'";
+		return "El resultado de sumar '" + dias + "' días hábiles en '" + "col" + "' a la fecha '" + fechaInicial + "' es: '" + nuevaFecha + "'";
 	}
 
 	/**

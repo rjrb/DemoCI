@@ -260,7 +260,7 @@ public class TestFechas {
 		Assert.assertThat(out.toString(), StringContains.containsString("No se pudo convertir la fecha '20180323'"));
 	}
 
-	@Test
+
 	public void testSumarFestivosColombia() {
 		// Datos
 		final List<DatosPrueba> datos = new ArrayList<>();
@@ -289,7 +289,7 @@ public class TestFechas {
 		}
 	}
 
-	@Test
+
 	public void testSumarFestivosPais() {
 		// Datos
 		final List<DatosPrueba> datos = new ArrayList<>();
