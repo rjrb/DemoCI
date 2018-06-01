@@ -39,8 +39,7 @@ Corresponde a un entero con la cantidad de días hábiles a sumarle a la fecha d
 
 Corresponde al código del país para el cual, se debe hacer la suma de los días hábiles
 > Requerido sólo para acción `sf`
-
-> Para la acción `sfc` siempre corresponde internamente a `col`
+>> Para la acción `sfc` siempre corresponde internamente a `col`
 
 # Ejemplos
 
