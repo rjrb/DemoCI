@@ -1,6 +1,7 @@
 /.gradle/
 /.idea/
 /.nb-gradle/
+/.classpath/
 /build/
 /dist/
 /logs/
