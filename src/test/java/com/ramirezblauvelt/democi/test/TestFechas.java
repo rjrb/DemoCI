@@ -67,6 +67,11 @@ public class TestFechas {
 				LocalDate.of(2018, Month.APRIL, 11).toString(),
 				SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.MARCH, 16), 15, "col").toString()
 			);
+			Assert.assertEquals(
+				"No sumó los días hábiles esperados",
+				LocalDate.of(2018, Month.MAY, 2).toString(),
+				SumarFestivos.sumarDiasHabilesConFestivos(LocalDate.of(2018, Month.APRIL, 13), 12, "col").toString()
+			);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
