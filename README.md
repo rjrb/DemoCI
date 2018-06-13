@@ -3,6 +3,7 @@ Proyecto pequeño en Java, con Gradle, jUnit y pruebas automatizadas con Python,
 
 [![Visual Studio Team Services](https://sophosproyectos.visualstudio.com/_apis/public/build/definitions/92704e0a-93c2-4444-a919-6df362b72412/2/badge)](https://sophosproyectos.visualstudio.com/_apis/public/build/definitions/92704e0a-93c2-4444-a919-6df362b72412/2/badge)
 [![Visual Studio Team Services](https://rmprodsbr1.vsrm.visualstudio.com/A9552bd68-f839-4b96-8792-861710c377f2/_apis/public/Release/badge/92704e0a-93c2-4444-a919-6df362b72412/1/2)](https://rmprodsbr1.vsrm.visualstudio.com/A9552bd68-f839-4b96-8792-861710c377f2/_apis/public/Release/badge/92704e0a-93c2-4444-a919-6df362b72412/1/2)
+[![SonarCloud Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.ramirezblauvelt.democi%3ADemoCI&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.ramirezblauvelt.democi%3ADemoCI)
 
 # ¿Qué hace el programa?
 
