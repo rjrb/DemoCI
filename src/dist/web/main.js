@@ -6,6 +6,13 @@ window.onload = init;
  * Carga la lista de países admitidos desde la API
  */
 function init() {
+    // Indicador de carga
+    $(document).ajaxStart(function() {
+        $('#loading').show();
+    }).ajaxStop(function() {
+        $('#loading').hide();
+    });
+
     // Fecha por defecto
     $('#fechaInicial').val(new Date().toISOString().slice(0, 10));
 
@@ -52,17 +59,10 @@ function invokeRestApi() {
     // URL de la API
     var url = "https://v30stkwesf.execute-api.us-east-1.amazonaws.com/v1/sumardiashabiles/";
 
-    // Construct an HTTP request
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-
-    // send the collected data as JSON
-    xhr.send(JSON.stringify(request));
-
-    xhr.onloadend = function () {
-        document.getElementById("response").value = JSON.parse(xhr.responseText);
-    };
+    // Llama la API
+    $.post(url, JSON.stringify(request), function(data) {
+        txtResponse.val(data);
+    });
 }
 
 /**
