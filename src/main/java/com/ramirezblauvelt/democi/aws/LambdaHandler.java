@@ -80,7 +80,7 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 			fechaInicial,
 			nuevaFecha,
 			DateTimeFormatter
-				.ofLocalizedDate(FormatStyle.LONG)
+				.ofLocalizedDate(FormatStyle.FULL)
 				.withLocale(new Locale("es", "CO"))
 				.format(nuevaFecha)
 		);
