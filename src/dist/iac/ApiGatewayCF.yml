@@ -1,0 +1,186 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: API Gateway
+
+Resources:
+
+  SumarApi :
+    Type : AWS::ApiGateway::RestApi
+    Properties :
+        Name : SumarDiasHabilesConFestivosCF
+        EndpointConfiguration: 
+          Types:
+            - REGIONAL
+
+  PaisesSoportadosResource: 
+    Type: AWS::ApiGateway::Resource
+    Properties: 
+      RestApiId: 
+        Ref: SumarApi
+      ParentId:
+        Fn::GetAtt:
+        - SumarApi
+        - RootResourceId
+      PathPart: paisessoportados
+
+  PaisesSoportadosGet: 
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId:
+        Ref: SumarApi
+      ResourceId:
+        Ref: PaisesSoportadosResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ''
+          - - 'arn:aws:apigateway:'
+            - Ref: AWS::Region
+            - ":lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:619844393519:function:PaisesSoportadosCF"
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.body"
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          StatusCode: 200        
+      MethodResponses:
+      - ResponseModels:
+          application/json:
+            Ref: EmptyModel
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Origin: true
+        StatusCode: 200
+
+  LambdaPermissionPaises:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:invokeFunction
+      FunctionName: arn:aws:lambda:us-east-1:619844393519:function:PaisesSoportadosCF
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:aws:execute-api:'
+          - Ref: AWS::Region
+          - ":"
+          - Ref: AWS::AccountId
+          - ":"
+          - Ref: SumarApi
+          - "/*"
+
+  SumarDiasResource: 
+    Type: AWS::ApiGateway::Resource
+    Properties: 
+      RestApiId: 
+        Ref: SumarApi
+      ParentId:
+        Fn::GetAtt:
+        - SumarApi
+        - RootResourceId
+      PathPart: sumardiashabiles
+
+  SumarDiasPost: 
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId:
+        Ref: SumarApi
+      ResourceId:
+        Ref: SumarDiasResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ''
+          - - 'arn:aws:apigateway:'
+            - Ref: AWS::Region
+            - ":lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:619844393519:function:SumarDiasHabilesConFestivosCF"
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.body"
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+          StatusCode: 200        
+      MethodResponses:
+      - ResponseModels:
+          application/json:
+            Ref: EmptyModel
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Origin: true
+        StatusCode: 200
+
+  LambdaPermissionSumarDias:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:invokeFunction
+      FunctionName: arn:aws:lambda:us-east-1:619844393519:function:SumarDiasHabilesConFestivosCF
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:aws:execute-api:'
+          - Ref: AWS::Region
+          - ":"
+          - Ref: AWS::AccountId
+          - ":"
+          - Ref: SumarApi
+          - "/*"
+
+  EmptyModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: application/json
+      Name: EMPTY
+      RestApiId:
+        Ref: SumarApi
+      Schema: "{}"
+
+  SumarApiDespliegue: 
+    DependsOn: 
+      - PaisesSoportadosGet
+      - SumarDiasPost
+    Type: AWS::ApiGateway::Deployment
+    Properties: 
+      RestApiId: 
+        Ref: SumarApi
+      Description: Despliegue de la API mediante CloudFormation
+
+  SumarApiStage:
+    Type: 'AWS::ApiGateway::Stage'
+    Properties:
+      StageName: cf
+      Description: Instancia de la API mediante CloudFormation
+      RestApiId: 
+        Ref: SumarApi
+      DeploymentId: 
+        Ref: SumarApiDespliegue
+      MethodSettings:
+        - ResourcePath: "/*"
+          HttpMethod: "*"
+          MetricsEnabled: 'true'
+          DataTraceEnabled: 'true'
+
+Outputs:
+  ApiId:
+    Description: ID de la API
+    Value:
+      Ref: SumarApi
+  ApiStage:
+    Description: URL de la API
+    Value:
+      Fn::Join:
+      - ''
+      - - "https://"
+        - Ref: SumarApi
+        - ".execute-api."
+        - Ref: AWS::Region
+        - ".amazonaws.com"
+        - "/cf"

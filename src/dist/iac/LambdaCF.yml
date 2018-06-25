@@ -1,0 +1,69 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambdas para las acciones del sitio Web
+
+Resources:
+  
+  SumarDiasHabilesConFestivosCF: 
+    Type: "AWS::Lambda::Function"
+    Properties: 
+      FunctionName: "SumarDiasHabilesConFestivosCF"
+      Handler: "com.ramirezblauvelt.democi.aws.LambdaHandler::handleRequest"
+      Description: "Suma a una fecha un número de días hábiles, teniendo en cuenta sábados, domingos y los festivos del país seleccionado"
+      Role: 
+        Fn::GetAtt: 
+          - "LambdaExecutionRole"
+          - "Arn"
+      Code: 
+        S3Bucket: "lambda-functions-sb"
+        S3Key: "DemoCI.zip"
+      Runtime: "java8"
+      MemorySize: 512
+      Timeout: 30
+      TracingConfig:
+        Mode: "PassThrough"
+  
+  PaisesSoportadosCF: 
+    Type: "AWS::Lambda::Function"
+    Properties: 
+      FunctionName: "PaisesSoportadosCF"
+      Handler: "get_supported_countries.handle_request"
+      Description: "Obtiene los países soportados por la API"
+      Role: 
+        Fn::GetAtt: 
+          - "LambdaExecutionRole"
+          - "Arn"
+      Code: 
+        S3Bucket: "lambda-functions-sb"
+        S3Key: "PaisesSoportados.zip"
+      Runtime: "python3.6"
+      MemorySize: 128
+      Timeout: 10
+      TracingConfig:
+        Mode: "PassThrough"
+  
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            - dynamodb:*
+            - lambda:*
+            - s3:*
+            Resource: "*"
