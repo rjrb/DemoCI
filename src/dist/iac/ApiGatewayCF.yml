@@ -7,7 +7,7 @@ Resources:
   SumarApi :
     Type : AWS::ApiGateway::RestApi
     Properties :
-        Name : SumarDiasHabilesConFestivosCF
+        Name : SumarDiasHabilesConFestivos
         EndpointConfiguration: 
           Types:
             - REGIONAL
@@ -40,7 +40,7 @@ Resources:
           - ''
           - - 'arn:aws:apigateway:'
             - Ref: AWS::Region
-            - ":lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:619844393519:function:PaisesSoportadosCF"
+            - ":lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:619844393519:function:PaisesSoportados"
             - "/invocations"
         IntegrationResponses:
         - ResponseTemplates:
@@ -60,7 +60,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:invokeFunction
-      FunctionName: arn:aws:lambda:us-east-1:619844393519:function:PaisesSoportadosCF
+      FunctionName: arn:aws:lambda:us-east-1:619844393519:function:PaisesSoportados
       Principal: apigateway.amazonaws.com
       SourceArn:
         Fn::Join:
@@ -101,7 +101,7 @@ Resources:
           - ''
           - - 'arn:aws:apigateway:'
             - Ref: AWS::Region
-            - ":lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:619844393519:function:SumarDiasHabilesConFestivosCF"
+            - ":lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:619844393519:function:SumarDiasHabilesConFestivos"
             - "/invocations"
         IntegrationResponses:
         - ResponseTemplates:
@@ -121,7 +121,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:invokeFunction
-      FunctionName: arn:aws:lambda:us-east-1:619844393519:function:SumarDiasHabilesConFestivosCF
+      FunctionName: arn:aws:lambda:us-east-1:619844393519:function:SumarDiasHabilesConFestivos
       Principal: apigateway.amazonaws.com
       SourceArn:
         Fn::Join:

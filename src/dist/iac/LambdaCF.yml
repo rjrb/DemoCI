@@ -7,7 +7,7 @@ Resources:
   SumarDiasHabilesConFestivosCF: 
     Type: "AWS::Lambda::Function"
     Properties: 
-      FunctionName: "SumarDiasHabilesConFestivosCF"
+      FunctionName: SumarDiasHabilesConFestivos
       Handler: "com.ramirezblauvelt.democi.aws.LambdaHandler::handleRequest"
       Description: "Suma a una fecha un número de días hábiles, teniendo en cuenta sábados, domingos y los festivos del país seleccionado"
       Role: 
@@ -26,7 +26,7 @@ Resources:
   PaisesSoportadosCF: 
     Type: "AWS::Lambda::Function"
     Properties: 
-      FunctionName: "PaisesSoportadosCF"
+      FunctionName: PaisesSoportados
       Handler: "get_supported_countries.handle_request"
       Description: "Obtiene los países soportados por la API"
       Role: 
