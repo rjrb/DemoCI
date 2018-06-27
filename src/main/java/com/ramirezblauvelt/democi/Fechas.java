@@ -102,7 +102,7 @@ public class Fechas {
 
 			// Valida si el país está soportado por el servicio
 			if(!SumarFestivos.isPaisSoportado(pais)) {
-				LOGGER.error("País '{}' no soportado", pais);
+				LOGGER.error("País '{}' no compatible", pais);
 				return true;
 			}
 		}
