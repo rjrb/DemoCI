@@ -1,5 +1,9 @@
 window.onload = init;
 
+var currentApiURL  = "#{AWS_AG_URL}#";
+var fallbackApiUrl = "https://5w3ks7vf9g.execute-api.us-east-1.amazonaws.com/cf";
+var apiUrl = (currentApiURL.startsWith("#") ? fallbackApiUrl : currentApiURL);
+
 /**
  * Inicializa el formulario
  * Establece la fecha por defecto
@@ -17,7 +21,7 @@ function init() {
     $('#fechaInicial').val(new Date().toISOString().slice(0, 10));
 
     // Carga la lista de países permitidos
-    var url = "https://v30stkwesf.execute-api.us-east-1.amazonaws.com/v1/paisessoportados/";
+    var url = apiUrl +  "/paisessoportados/";
 
     var dropdown = $('#pais');
     dropdown.empty();
@@ -57,7 +61,7 @@ function invokeRestApi() {
     request["pais"] = pais;
 
     // URL de la API
-    var url = "https://v30stkwesf.execute-api.us-east-1.amazonaws.com/v1/sumardiashabiles/";
+    var url = apiUrl +  "/sumardiashabiles/";
 
     // Llama la API
     $.post(url, JSON.stringify(request), function(data) {
