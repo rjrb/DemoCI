@@ -5,42 +5,42 @@ Description: Lambdas para las acciones del sitio Web
 Resources:
   
   SumarDiasHabilesConFestivosCF: 
-    Type: "AWS::Lambda::Function"
+    Type: AWS::Lambda::Function
     Properties: 
       FunctionName: SumarDiasHabilesConFestivos
-      Handler: "com.ramirezblauvelt.democi.aws.LambdaHandler::handleRequest"
-      Description: "Suma a una fecha un número de días hábiles, teniendo en cuenta sábados, domingos y los festivos del país seleccionado"
+      Handler: com.ramirezblauvelt.democi.aws.LambdaHandler::handleRequest
+      Description: "Suma a una fecha un número de días hábiles, teniendo en cuenta sábados, domingos y los festivos del país seleccionado. \nDatos de prueba: {\"fechaInicial\": \"2018-03-23\", \"diasHabilesSumar\": 15, \"pais\": \"col\"}"
       Role: 
         Fn::GetAtt: 
-          - "LambdaExecutionRole"
-          - "Arn"
+          - LambdaExecutionRole
+          - Arn
       Code: 
-        S3Bucket: "lambda-functions-sb"
-        S3Key: "DemoCI.zip"
-      Runtime: "java8"
+        S3Bucket: lambda-functions-sb
+        S3Key: DemoCI.zip
+      Runtime: java8
       MemorySize: 512
       Timeout: 30
       TracingConfig:
-        Mode: "PassThrough"
+        Mode: PassThrough
   
   PaisesSoportadosCF: 
-    Type: "AWS::Lambda::Function"
+    Type: AWS::Lambda::Function
     Properties: 
       FunctionName: PaisesSoportados
-      Handler: "get_supported_countries.handle_request"
+      Handler: get_supported_countries.handle_request
       Description: "Obtiene los países soportados por la API"
       Role: 
         Fn::GetAtt: 
-          - "LambdaExecutionRole"
-          - "Arn"
+          - LambdaExecutionRole
+          - Arn
       Code: 
-        S3Bucket: "lambda-functions-sb"
-        S3Key: "PaisesSoportados.zip"
-      Runtime: "python3.6"
+        S3Bucket: lambda-functions-sb
+        S3Key: PaisesSoportados.zip
+      Runtime: python3.6
       MemorySize: 128
       Timeout: 10
       TracingConfig:
-        Mode: "PassThrough"
+        Mode: PassThrough
   
   LambdaExecutionRole:
     Type: AWS::IAM::Role
@@ -67,3 +67,13 @@ Resources:
             - lambda:*
             - s3:*
             Resource: "*"
+
+Outputs:
+  IAMRoleArn:
+    Value: 
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+    Description: ARN del rol IAM creado
+    Export:
+      Name: ArnIamRole
