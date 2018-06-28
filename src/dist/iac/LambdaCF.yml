@@ -68,6 +68,33 @@ Resources:
             - s3:*
             Resource: "*"
 
+  ScheduledRule: 
+    Type: AWS::Events::Rule
+    Properties: 
+      Name: HotLambda
+      Description: Regla para mantener "caliente" (en memoria) la Lambda
+      ScheduleExpression: rate(20 minutes)
+      State: ENABLED
+      Targets: 
+        - 
+          Arn: 
+            Fn::GetAtt: 
+              - SumarDiasHabilesConFestivosCF
+              - Arn
+          Id: HotLambdaCW
+          Input: "{\"fechaInicial\": \"2018-03-23\", \"diasHabilesSumar\": 15, \"pais\": \"col\"}"
+  PermissionForEventsToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: 
+        Ref: SumarDiasHabilesConFestivosCF
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: 
+        Fn::GetAtt: 
+          - ScheduledRule
+          - Arn
+
 Outputs:
   IAMRoleArn:
     Value: 
