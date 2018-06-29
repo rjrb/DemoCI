@@ -151,7 +151,7 @@ Resources:
     Properties: 
       RestApiId: 
         Ref: SumarApi
-      Description: Despliegue de la API mediante CloudFormation
+      Description: Despliegue de la API mediante CloudFormation.
 
   SumarApiStage:
     Type: 'AWS::ApiGateway::Stage'
