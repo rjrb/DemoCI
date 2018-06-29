@@ -24,6 +24,20 @@ Suma días hábiles a fechas, a partir de la consulta de los feriados de un paí
 1. Intérprete de Python en el ambiente de certificación
 1. Acceso a una consola
 
+# Estructura del repositorio
+
+| Ruta                       | Descripción                                                                       | Lenguaje/Herramienta |
+|----------------------------|-----------------------------------------------------------------------------------|:--------------------:|
+| build.gradle               | Archivo que indica cómo se construye la aplicación y las dependencias externas    |        Gradle        |
+| src/main/java              | Fuentes del proyecto en Java                                                      |         Java         |
+| src/main/java/.../aws      | Código Java para la Lambda que soporta la API de sumar días hábiles               |      Java/Lambda     |
+| src/main/resources         | Recursos del proyecto (archivo de configuración del logger Log4j2)                |      XML/Log4j2      |
+| src/test/java              | Pruebas unitarias del proyecto Java con jUnit                                     |      Java/jUnit      |
+| src/dist/pruebas_democi.py | Script Python para las pruebas E2E de la aplicación de consola                    |        Python        |
+| src/dist/iac               | Scripts YAML para AWS CloudFormation                                              |  YAML/CloudFormation |
+| src/dist/países-soportados | Código Pyhton para la Lambda que soporta la API de obtención de países soportados |     Python/Lambda    |
+| src/dist/web               | Código de la página web que consume la API                                        |  HTML/CSS/JS/jQuery  |
+
 # ¿Cómo se utiliza?
 
 Es una programa Java stand-alone de línea de comandos, que requiere una serie de argumentos para operar
