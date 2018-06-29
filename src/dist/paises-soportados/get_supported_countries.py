@@ -50,11 +50,12 @@ def handle_request(event, context):
             paises.append(pais)
 
         # JSONify
-        json_salida = json.dumps(paises, default=jsonDefault, ensure_ascii=False)
+        string_json_salida = json.dumps(paises, default=jsonDefault, ensure_ascii=False)
+        json_salida = json.loads(string_json_salida)
 
         # Escribe el archivo local
         with codecs.open(archivo, 'w', 'utf-8') as outfile:
-            outfile.write(json_salida)
+            outfile.write(string_json_salida)
         
         # Lo carga en S3
         s3 = boto3.resource('s3')
