@@ -43,7 +43,7 @@ Suma días hábiles a fechas, a partir de la consulta de los feriados de un paí
 Es una programa Java stand-alone de línea de comandos, que requiere una serie de argumentos para operar
 
 ```
-java -jar Demo-[version].jar [Acción] [Fecha de referencia] [Días a sumar] [[País]]
+java -jar DemoCI-[version].jar [Acción] [Fecha de referencia] [Días a sumar] [[País]]
 ```
 
 ## Acciones
