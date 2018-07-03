@@ -157,7 +157,7 @@ Resources:
     Type: 'AWS::ApiGateway::Stage'
     Properties:
       StageName: cf
-      Description: Instancia de la API mediante CloudFormation
+      Description: Instancia de la API mediante CloudFormation Final.
       RestApiId: 
         Ref: SumarApi
       DeploymentId: 
