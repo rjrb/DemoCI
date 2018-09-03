@@ -28,7 +28,7 @@ Resources:
     Properties: 
       FunctionName: PaisesSoportados
       Handler: get_supported_countries.handle_request
-      Description: "Obtiene los países soportados por la API"
+      Description: "Obtiene los países soportados por la API test"
       Role: 
         Fn::GetAtt: 
           - LambdaExecutionRole
