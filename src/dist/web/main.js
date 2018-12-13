@@ -1,7 +1,7 @@
 window.onload = init;
 
 var currentApiURL  = "#{AWS_AG_URL}#";
-var fallbackApiUrl = "https://m8dp8y9fl0.execute-api.us-east-1.amazonaws.com/cf";
+var fallbackApiUrl = "https://7smuvw6681.execute-api.us-east-1.amazonaws.com/cf";
 var apiUrl = (currentApiURL.startsWith("#") ? fallbackApiUrl : currentApiURL);
 
 /**
@@ -65,8 +65,7 @@ function invokeRestApi() {
 
     // Llama la API
     $.post(url, JSON.stringify(request), function(data) {
-        alert(data);
-        txtResponse.val(data);
+        txtResponse.val(data.resultado);
     });
 }
 
