@@ -33,7 +33,7 @@ public class TestLambdaHandler {
 
 		// Prueba
 		Assert.assertThat(
-			lh.handleRequest(r, null),
+			lh.handleRequest(r, null).getResultado(),
 			CoreMatchers.containsString(n.toString())
 		);
 	}
@@ -56,7 +56,7 @@ public class TestLambdaHandler {
 		Assert.assertEquals(
 			"La fecha esperada no coincide",
 			m.getFormattedMessage(),
-			lh.handleRequest(r, null)
+			lh.handleRequest(r, null).getResultado()
 		);
 	}
 
@@ -77,7 +77,7 @@ public class TestLambdaHandler {
 		Assert.assertEquals(
 			"La fecha esperada no coincide",
 			m.getFormattedMessage(),
-			lh.handleRequest(r, null)
+			lh.handleRequest(r, null).getResultado()
 		);
 	}
 

@@ -51,7 +51,7 @@ Resources:
       MethodResponses:
       - ResponseModels:
           application/json:
-            Ref: EmptyModel
+            Ref: PaisesResponseModel
         ResponseParameters:
           method.response.header.Access-Control-Allow-Origin: true
         StatusCode: 200
@@ -112,10 +112,14 @@ Resources:
       MethodResponses:
       - ResponseModels:
           application/json:
-            Ref: EmptyModel
+            Ref: SumarDiasResponseModel
         ResponseParameters:
           method.response.header.Access-Control-Allow-Origin: true
         StatusCode: 200
+      RequestModels:
+        - RequestModels:
+            application/json:
+              Ref: SumarDiasRequestModel
 
   LambdaPermissionSumarDias:
     Type: AWS::Lambda::Permission
@@ -142,6 +146,82 @@ Resources:
       RestApiId:
         Ref: SumarApi
       Schema: "{}"
+
+  PaisesResponseModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: application/json
+      Name: PaisesSoportadosResponseBody
+      Description: Respuesta para la API de PaisesSoportados
+      RestApiId:
+        Ref: SumarApi
+      Schema:
+        "$schema": "http://json-schema.org/draft-06/schema#"
+        title: PaisesSoportadosResponseBodyElement
+        type: array
+        items:
+          "$ref": "#/definitions/PaisesSoportadosResponseBodyElement"
+          definitions:
+            PaisesSoportadosResponseBodyElement:
+              type: object
+              additionalProperties: false
+              properties:
+                codigo:
+                  type: string
+                nombre:
+                  type: string
+              required:
+                - codigo
+                - nombre
+
+  SumarDiasResponseModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: application/json
+      Name: SumarDiasHabilesResponseBody
+      RestApiId:
+        Ref: SumarApi
+      Schema:
+        "$schema": "http://json-schema.org/draft-06/schema#"
+        "$ref": "#/definitions/SumarDiasHabilesResponseBody"
+        definitions:
+          SumarDiasHabilesResponseBody:
+            type: object,
+            additionalProperties: false
+            properties:
+              resultado:
+                type: string
+            required:
+              - resultado
+        title: SumarDiasHabilesResponseBody
+
+  SumarDiasRequestModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: application/json
+      Name: SumarDiasHabilesRequestBody
+      RestApiId:
+        Ref: SumarApi
+      Schema:
+        "$schema": "http://json-schema.org/draft-06/schema#"
+        "$ref": "#/definitions/SumarDiasHabilesRequestBody"
+        definitions:
+          SumarDiasHabilesRequestBody:
+            type: object
+            additionalProperties: false
+            properties:
+              fechaInicial:
+                type: string,
+                format: date
+              diasHabilesSumar:
+                type: integer
+              pais:
+                type: string
+            required:
+              - diasHabilesSumar
+              - fechaInicial
+              - pais
+        title: SumarDiasHabilesRequestBody
 
   SumarApiDespliegue: 
     DependsOn: 

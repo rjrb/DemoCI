@@ -2,6 +2,7 @@ package com.ramirezblauvelt.democi.aws.lambda;
 
 import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import com.amazonaws.services.lambda.invoke.LambdaInvokerFactory;
+import com.ramirezblauvelt.democi.beans.LambdaResponse;
 import com.ramirezblauvelt.democi.beans.PaisSoportado;
 import com.ramirezblauvelt.democi.beans.PaisSoportadoAPI;
 
@@ -53,6 +54,15 @@ public class UtilidadesLambda {
 	       })
 	       .collect(Collectors.toConcurrentMap(PaisSoportado::getCountryCode, Function.identity()))
 		;
+	}
+
+	/**
+	 * Procedimiento que hace el wrapping de una cadena como una respuesta de Lambda
+	 * @param texto el texto a empaquetar
+	 * @return la respuesta en el formato esperado
+	 */
+	public static LambdaResponse toLambdaResponse(String texto) {
+		return new LambdaResponse(texto);
 	}
 
 }

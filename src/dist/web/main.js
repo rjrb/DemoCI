@@ -65,6 +65,7 @@ function invokeRestApi() {
 
     // Llama la API
     $.post(url, JSON.stringify(request), function(data) {
+        alert(data);
         txtResponse.val(data);
     });
 }

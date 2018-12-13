@@ -2,7 +2,9 @@ package com.ramirezblauvelt.democi.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.ramirezblauvelt.democi.aws.lambda.UtilidadesLambda;
 import com.ramirezblauvelt.democi.beans.LambdaRequest;
+import com.ramirezblauvelt.democi.beans.LambdaResponse;
 import com.ramirezblauvelt.democi.utils.SumarFestivos;
 import com.ramirezblauvelt.democi.utils.Utilidades;
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 
-public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
+public class LambdaHandler implements RequestHandler<LambdaRequest, LambdaResponse> {
 
 	/* Importa la configuración del logger */
 	static {
@@ -34,7 +36,7 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 	 * @param context AWS Lambda context
 	 * @return la fecha que resulta de sumar a la fecha inicial, en el país indicado, la cantidad de días hábiles indicados
 	 */
-	@Override public String handleRequest(LambdaRequest input, Context context) {
+	@Override public LambdaResponse handleRequest(LambdaRequest input, Context context) {
 		// Elimina el appender de consola
 		Utilidades.eliminarAppender("Console");
 
@@ -54,7 +56,7 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 		if(fecha == null) {
 			final Message m = new FormattedMessage("La fecha ingresada '{}' no tiene un formato ISO válido", fechaInicial);
 			LOGGER.error(m);
-			return m.getFormattedMessage();
+			return UtilidadesLambda.toLambdaResponse(m.getFormattedMessage());
 		}
 
 		// Obtiene el nombre del país (si no lo encuentra, es porque no está soportado)
@@ -62,7 +64,7 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 		if(nombrePais == null) {
 			final Message m = new FormattedMessage("País '{}' no soportado", pais);
 			LOGGER.error(m);
-			return m.getFormattedMessage();
+			return UtilidadesLambda.toLambdaResponse(m.getFormattedMessage());
 		}
 
 		// Obtiene el resultado
@@ -89,7 +91,7 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, String> {
 		LOGGER.info(resultado);
 
 		// Retorna el resultado
-		return resultado.getFormattedMessage();
+		return UtilidadesLambda.toLambdaResponse(resultado.getFormattedMessage());
 	}
 
 }
