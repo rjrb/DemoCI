@@ -8,6 +8,7 @@ Resources:
     Type : AWS::ApiGateway::RestApi
     Properties :
         Name : SumarDiasHabilesConFestivos
+        Description: API para la aplicación de Sumar Días Hábiles
         EndpointConfiguration: 
           Types:
             - REGIONAL
@@ -137,15 +138,6 @@ Resources:
           - Ref: SumarApi
           - "/*"
 
-  EmptyModel:
-    Type: AWS::ApiGateway::Model
-    Properties:
-      ContentType: application/json
-      Name: EMPTY
-      RestApiId:
-        Ref: SumarApi
-      Schema: "{}"
-
   PaisesResponseModel:
     Type: AWS::ApiGateway::Model
     Properties:
@@ -155,23 +147,23 @@ Resources:
       RestApiId:
         Ref: SumarApi
       Schema:
-        "$schema": "http://json-schema.org/draft-06/schema#"
-        title: PaisesSoportadosResponseBodyElement
+        "$schema": http://json-schema.org/draft-06/schema#
         type: array
         items:
           "$ref": "#/definitions/PaisesSoportadosResponseBodyElement"
-          definitions:
-            PaisesSoportadosResponseBodyElement:
-              type: object
-              additionalProperties: false
-              properties:
-                codigo:
-                  type: string
-                nombre:
-                  type: string
-              required:
-                - codigo
-                - nombre
+        definitions:
+          PaisesSoportadosResponseBodyElement:
+            type: object
+            additionalProperties: false
+            properties:
+              codigo:
+                type: string
+              nombre:
+                type: string
+            required:
+              - codigo
+              - nombre
+            title: PaisesSoportadosResponseBodyElement
 
   SumarDiasResponseModel:
     Type: AWS::ApiGateway::Model
@@ -211,7 +203,6 @@ Resources:
             properties:
               fechaInicial:
                 type: string
-                format: date
               diasHabilesSumar:
                 type: integer
               pais:
