@@ -36,7 +36,7 @@ Resources:
       Code:
         S3Bucket: lambda-functions-sb
         S3Key: SumarDiasCalendario.zip
-      Runtime: nodejs
+      Runtime: nodejs8.10
       MemorySize: 128
       Timeout: 10
       TracingConfig:
