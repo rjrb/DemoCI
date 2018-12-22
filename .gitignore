@@ -9,9 +9,9 @@
 /out/
 /bin/
 *.iml
-*.json
 *.log
 *.exe
 *.zip
 *.txt
+persistencia.json
 Thumbs.db

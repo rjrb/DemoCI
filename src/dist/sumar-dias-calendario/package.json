@@ -1,0 +1,10 @@
+{
+    "name": "sumar-dias-calendario",
+    "version": "1.0.0",
+    "description": "Aplicación para sumar días calendario a una fecha",
+    "main": "sumar-dias-calendario.js",
+    "private": true,
+    "dependencies": {
+        "moment": "^2.23.0"
+    }
+}
