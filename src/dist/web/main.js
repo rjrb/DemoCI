@@ -1,7 +1,7 @@
 window.onload = init;
 
 var currentApiURL  = "#{AWS_AG_URL}#";
-var fallbackApiUrl = "https://7smuvw6681.execute-api.us-east-1.amazonaws.com/cf";
+var fallbackApiUrl = "https://55mg4yvj1m.execute-api.us-east-1.amazonaws.com/cf";
 var apiUrl = (currentApiURL.startsWith("#") ? fallbackApiUrl : currentApiURL);
 
 /**

@@ -47,7 +47,7 @@ exports.handler = async (event) => {
  * @param fecha el objeto Date a analizar
  * @returns {string}
  */
-function getFechaComoText(fecha) {
+function getFechaComoTexto(fecha) {
     // Inicializa la cadena
     var textoFecha = "";
 

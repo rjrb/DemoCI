@@ -23,7 +23,26 @@ Resources:
       TracingConfig:
         Mode: PassThrough
   
-  PaisesSoportadosCF: 
+  SumarDiasCalendarioCF:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: SumarDiasCalendario
+      Handler: sumar-dias-calendario.handler
+      Description: "Suma a una fecha un número de días calendario. \nDatos de prueba: {\"fechaInicial\": \"2018-03-23\", \"diasSumar\": 15}"
+      Role:
+        Fn::GetAtt:
+          - LambdaExecutionRole
+          - Arn
+      Code:
+        S3Bucket: lambda-functions-sb
+        S3Key: SumarDiasCalendario.zip
+      Runtime: nodejs
+      MemorySize: 128
+      Timeout: 10
+      TracingConfig:
+        Mode: PassThrough
+
+  PaisesSoportadosCF:
     Type: AWS::Lambda::Function
     Properties: 
       FunctionName: PaisesSoportados
@@ -72,7 +91,7 @@ Resources:
     Type: AWS::Events::Rule
     Properties: 
       Name: HotLambda
-      Description: Regla para mantener "caliente" (en memoria) la Lambda
+      Description: Regla para mantener "caliente" (en memoria) la Lambda en Java
       ScheduleExpression: rate(20 minutes)
       State: ENABLED
       Targets: 
