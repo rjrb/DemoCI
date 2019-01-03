@@ -1,11 +1,12 @@
 # Introducción
 Proyecto en Java, con Gradle, jUnit y pruebas automatizadas E2E con Python, para ilustar el uso de VSTS para CI/CD.
 
-También se integra con AWS, utilizando servicios como:
+También se integra con AWS, utilizando los siguientes servicios:
 - [x] Lambda
 - [x] DynamoDB
 - [x] API Gateway
 - [x] S3
+- [x] CloudFormation
 
 # Estados 
 
@@ -17,26 +18,36 @@ También se integra con AWS, utilizando servicios como:
 
 Suma días hábiles a fechas, a partir de la consulta de los feriados de un país, desde un servicio web
 
-# Prerrequisitos
+# Prerrequisitos del ejecutable
 
 1. Java 8
 1. Conexión a Internet
-1. Intérprete de Python en el ambiente de certificación
+1. Intérprete de Python en los ambientes de certificación y producción
 1. Acceso a una consola
+
+# Prerrequisitos para compilar
+
+1. Java 8
+1. Gradle 4+
+1. Python 3+ (PIP)
+1. NodeJS 8+ (NPM)
+1. Consola AWS con roles IAM configurados
+1. Conexión a Internet
 
 # Estructura del repositorio
 
-| Ruta                       | Descripción                                                                       | Lenguaje/Herramienta |
-|----------------------------|-----------------------------------------------------------------------------------|:--------------------:|
-| build.gradle               | Archivo que indica cómo se construye la aplicación y las dependencias externas    |        Gradle        |
-| src/main/java              | Fuentes del proyecto en Java                                                      |         Java         |
-| src/main/java/.../aws      | Código Java para la Lambda que soporta la API de sumar días hábiles               |      Java/Lambda     |
-| src/main/resources         | Recursos del proyecto (archivo de configuración del logger Log4j2)                |      XML/Log4j2      |
-| src/test/java              | Pruebas unitarias del proyecto Java con jUnit                                     |      Java/jUnit      |
-| src/dist/pruebas_democi.py | Script Python para las pruebas E2E de la aplicación de consola                    |        Python        |
-| src/dist/iac               | Scripts YAML para AWS CloudFormation                                              |  YAML/CloudFormation |
-| src/dist/países-soportados | Código Pyhton para la Lambda que soporta la API de obtención de países soportados |     Python/Lambda    |
-| src/dist/web               | Código de la página web que consume la API                                        |  HTML/CSS/JS/jQuery  |
+| Ruta                           | Descripción                                                                               | Lenguaje/Herramienta |
+|--------------------------------|-------------------------------------------------------------------------------------------|:--------------------:|
+| build.gradle                   | Archivo que indica cómo se construye la aplicación y las dependencias externas            |        Gradle        |
+| src/main/java                  | Fuentes del proyecto en Java                                                              |         Java         |
+| src/main/java/.../aws          | Código Java para la Lambda que soporta la API de sumar días hábiles                       |      Java/Lambda     |
+| src/main/resources             | Recursos del proyecto (archivo de configuración del logger Log4j2)                        |      XML/Log4j2      |
+| src/test/java                  | Pruebas unitarias del proyecto Java con jUnit                                             |      Java/jUnit      |
+| src/dist/pruebas_democi.py     | Script Python para las pruebas E2E de la aplicación de consola                            |        Python        |
+| src/dist/iac                   | Scripts YAML para AWS CloudFormation                                                      |  YAML/CloudFormation |
+| src/dist/paises-soportados     | Código Python para la Lambda que soporta la API de obtención de países soportados         |     Python/Lambda    |
+| src/dist/sumar-dias-calendario | Código NodeJS para la Lambda que soporta la API que suma días calendario a una fecha dada |     NodeJS/Lambda    |
+| src/dist/web                   | Código de la página web estática que consume la API                                       |  HTML/CSS/JS/jQuery  |
 
 # ¿Cómo se utiliza?
 
@@ -52,7 +63,7 @@ java -jar DemoCI-[version].jar [Acción] [Fecha de referencia] [Días a sumar] [
 
 ## Fecha de referencia
 
-Es la fecha a partir de la cual, se sumarán los días hábiles indicados.
+Es la fecha a partir de la cual se sumarán los días hábiles indicados.
 > La fecha **DEBE** ir en formato `yyyy-MM-dd`
 
 ## Días a sumar
